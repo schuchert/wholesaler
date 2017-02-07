@@ -1,7 +1,7 @@
 ---
 spring:
   datasource:
-    driverClassName: com.mysql.jdbc.Driver
+    driverClassName: org.mariadb.jdbc.Driver
     url: jdbc:mysql://localhost/wholesaler_development
     username: wholesaler
     password: wholesaler
