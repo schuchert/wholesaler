@@ -1,7 +1,7 @@
 #!/bin/sh
 
 mysql_execute() {
-	eval 'mysql -u root --password="" -e "$1";'
+	eval 'mysql -u root --password="vagrant" -e "$1";'
 }
 
 USER=wholesaler
