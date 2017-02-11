@@ -1,10 +1,3 @@
----
-spring:
-  datasource:
-    driverClassName: org.mariadb.jdbc.Driver
-    url: jdbc:mysql://localhost/wholesaler_development
-    username: wholesaler
-    password: wholesaler
   jpa:
     hibernate.ddl-auto: none
     show_sql: false
