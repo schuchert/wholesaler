@@ -55,7 +55,9 @@ package:
 deploy:
   stage: deploy
   image: monostream/cf-cli-autopilot
-  environment: production
+  environment:
+    name: production
+    url: http://galaxydistributors.tradefederation.space/swagger-ui.html
   script:
     - 'cf api https://api.run.pivotal.io'
     - 'cf auth $PWS_ACCT $PWS_PASSWORD'
