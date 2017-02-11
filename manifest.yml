@@ -6,5 +6,5 @@ applications:
   services:
   - wholesaler-db
   routes:
-  - route: galaxydistributors.tradefederation.space/api
-  - route: galaxydistributors.tradefederation.cfapps.io/api
+  - route: galaxydistributors.tradefederation.space
+  - route: galaxydistributors.tradefederation.cfapps.io
