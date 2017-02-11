@@ -1,13 +1,15 @@
-# CF example app: ping-pong matching server
+# CD Workshop: Wholesaler
 
-This is an app to match ping-pong players with each other. It's currently an
-API only, so you have to use `curl` to interact with it.
+This application makes up part of the CD workshop infrastructure.  This README will someday contain more information about how this application interacts with others in the workshop.
 
 It has an [acceptance test suite][acceptance-test] you might like to look at.
 
 **Note**: We highly recommend that you use the latest versions of any software required by this sample application. For example, make sure that you are using the most recent verion of maven.
 
-## Running on [Pivotal Web Services][pws]
+## Running on the workshop [Pivotal Web Services][pws]
+Gitlab is deploying the application, see `.gitlab-ci.yml`
+
+## Running on your own [Pivotal Web Services][pws]
 
 Log in.
 

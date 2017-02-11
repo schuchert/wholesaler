@@ -1,0 +1,66 @@
+stages:
+  - test
+  - build
+  - deploy
+
+.maven-runner: &maven-runner
+  tags:
+    - maven
+
+variables:
+  # This will supress any download for dependencies and plugins or upload messages which would clutter the console log.
+  # `showDateTime` will show the passed time in milliseconds. You need to specify `--batch-mode` to make this work.
+  MAVEN_OPTS: "-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true"
+  # As of Maven 3.3.0 instead of this you may define these options in `.mvn/maven.config` so the same config is used
+  # when running from the command line.
+  # `installAtEnd` and `deployAtEnd`are only effective with recent version of the corresponding plugins.
+  MAVEN_CLI_OPTS: "--batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true -DdeployAtEnd=true"
+  CF_DIAL_TIMEOUT: "60"
+
+# Cache downloaded dependencies and plugins between builds.
+cache:
+  paths:
+    - /root/.m2/repository/
+
+# This will only validate and compile stuff and run e.g. maven-enforcer-plugin.
+# Because some enforcer rules might check dependency convergence and class duplications
+# we use `test-compile` here instead of `validate`, so the correct classpath is picked up.
+validate:
+  stage: test
+  <<: *maven-runner
+  script:
+    - 'mvn $MAVEN_CLI_OPTS test-compile'
+
+# For merge requests do not `deploy` but only run `verify`.
+# See https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html
+verify:
+  stage: test
+  <<: *maven-runner
+  script:
+    - 'mvn $MAVEN_CLI_OPTS verify'
+  except:
+    - master
+
+package:
+  stage: build
+  <<: *maven-runner
+  script:
+    - 'mvn $MAVEN_CLI_OPTS package'
+  artifacts:
+    paths:
+    - target/app.jar
+  only:
+    - master
+
+deploy:
+  stage: deploy
+  image: monostream/cf-cli-autopilot
+  environment: production
+  script:
+    - 'cf api https://api.run.pivotal.io'
+    - 'cf auth $PWS_ACCT $PWS_PASSWORD'
+    - 'cf target -o Workshops -s tradefederation'
+    - 'cf push'
+  tags:
+    - docker
+

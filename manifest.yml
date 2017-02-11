@@ -1,7 +1,10 @@
 ---
 applications:
-  - name: springpong
-    buildpack: java_buildpack
-    path: target/pong-matcher-spring-1.0.0.BUILD-SNAPSHOT.jar
-    services:
-      - mysql
+- name: galaxydistributors
+  buildpack: java_buildpack
+  path: target/app.jar
+  services:
+  - wholesaler-db
+  routes:
+  - route: galaxydistributors.tradefederation.space/api
+  - route: galaxydistributors.tradefederation.cfapps.io/api
