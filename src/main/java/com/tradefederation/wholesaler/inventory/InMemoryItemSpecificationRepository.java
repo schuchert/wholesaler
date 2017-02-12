@@ -1,10 +1,13 @@
 package com.tradefederation.wholesaler.inventory;
 
+import org.springframework.stereotype.Component;
+
 import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+@Component
 public class InMemoryItemSpecificationRepository implements ItemSpecificationRepository {
     List<ItemSpecification> specifications;
 

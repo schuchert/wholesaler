@@ -1,7 +1,10 @@
 package com.tradefederation.wholesaler;
 
 import com.tradefederation.wholesaler.inventory.*;
-import com.tradefederation.wholesaler.retailer.*;
+import com.tradefederation.wholesaler.retailer.InMemoryRetailerRepsotiory;
+import com.tradefederation.wholesaler.retailer.Retailer;
+import com.tradefederation.wholesaler.retailer.RetailerClientAdapter;
+import com.tradefederation.wholesaler.retailer.RetailerRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,7 +32,7 @@ public class WholesalerPurchaseTest {
     @Before
     public void init() throws Exception {
         retailerRepository = new InMemoryRetailerRepsotiory();
-        retailer = retailerRepository.add(new RetailerId(), "name", new URL("http://www.retailer.com"));
+        retailer = retailerRepository.add("name", new URL("http://www.retailer.com"));
         itemSpecificationRepository = new InMemoryItemSpecificationRepository();
         itemSpecification = itemSpecificationRepository.add(new ItemSpecificationId(), "Name", "Description", BigDecimal.ONE);
         itemRepository = new InMemoryItemRepository();

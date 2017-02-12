@@ -21,4 +21,8 @@ public class Retailer {
     public void setVerified(boolean verified) {
         this.verified = verified;
     }
+
+    public RetailerId getId() {
+        return id;
+    }
 }

@@ -31,6 +31,7 @@ public class WholesalerTest {
 
     RetailerRepository retailerRepository;
     ItemRepository itemRepository;
+    private RetailerId retailerId;
 
     @Before
     public void init() {
@@ -41,7 +42,7 @@ public class WholesalerTest {
 
     @Test
     public void itShouldStoreANewRetailer() throws Exception {
-        RetailerId retailerId = registerValidRetailer();
+        retailerId = registerValidRetailer();
         assertTrue(retailerRepository.retailerBy(retailerId).isPresent());
     }
 
@@ -100,7 +101,7 @@ public class WholesalerTest {
 
     @Test(expected = RetailerDoesNotExist.class)
     public void itShouldRejectRequestAPurchaseFromAnUnknownRetailer() {
-        wholesaler.purchase(new RetailerId(), new ItemSpecificationId());
+        wholesaler.purchase(new RetailerId(1), new ItemSpecificationId());
     }
 
     @Test(expected = ItemSpecificationDoesNotExistException.class)

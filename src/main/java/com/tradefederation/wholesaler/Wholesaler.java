@@ -2,10 +2,13 @@ package com.tradefederation.wholesaler;
 
 import com.tradefederation.wholesaler.inventory.*;
 import com.tradefederation.wholesaler.retailer.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.net.URL;
 import java.util.Optional;
 
+@Component
 public class Wholesaler {
     private RetailerId retailerId;
     private RetailerClientAdapter retailerClientAdapter;
@@ -13,6 +16,7 @@ public class Wholesaler {
     private RetailerRepository retailerRepository;
     private ItemRepository itemRepository;
 
+    @Autowired
     public Wholesaler(RetailerClientAdapter retailerClientAdapter, ItemSpecificationRepository itemSpecificationRepository, RetailerRepository retailerRepository, ItemRepository itemRepository) {
         this.retailerClientAdapter = retailerClientAdapter;
         this.itemSpecificationRepository = itemSpecificationRepository;
@@ -27,10 +31,9 @@ public class Wholesaler {
         if (callbackUrl == null)
             throw new IllegalArgumentException("callbackUrl cannot be null");
 
-        retailerId = new RetailerId();
-        Retailer candidateRetailer = retailerRepository.add(retailerId, name, callbackUrl);
+        Retailer candidateRetailer = retailerRepository.add(name, callbackUrl);
         verifyRetailerUrl(candidateRetailer);
-        return retailerId;
+        return candidateRetailer.getId();
     }
 
     private void verifyRetailerUrl(Retailer candidateRetailer) {
