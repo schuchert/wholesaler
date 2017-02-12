@@ -2,23 +2,32 @@ package com.hoeggsoftware.wholesaler;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Optional;
 
-import static junit.framework.TestCase.assertFalse;
-import static junit.framework.TestCase.assertNotNull;
-import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.*;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class WholesalerTest {
-
     private Wholesaler wholesaler;
+
+    @Mock
+    RetailerClientAdapter ignored;
+
+    @Mock
+    ItemRepository itemRepository;
 
     @Before
     public void init() {
-        wholesaler = new Wholesaler();
+        wholesaler = new Wholesaler(ignored, itemRepository);
     }
 
     @Test
@@ -55,6 +64,7 @@ public class WholesalerTest {
     public void itShouldAssociateRetailerIdWithNewlyCreatedRetailer() throws Exception {
         RetailerId retailerId = registerValidRetailer();
         Optional<Retailer> retailer = wholesaler.retailerBy(retailerId);
+        assertTrue(retailer.isPresent());
         assertEquals(retailerId, retailer.get().id);
     }
 
@@ -72,6 +82,7 @@ public class WholesalerTest {
     public void retailerInitiallyUnverified() throws Exception {
         RetailerId retailerId = registerValidRetailer();
         Optional<Retailer> retailer = wholesaler.retailerBy(retailerId);
+        assertTrue(retailer.isPresent());
         assertFalse(retailer.get().isVerified());
     }
 
@@ -80,13 +91,19 @@ public class WholesalerTest {
         registerValidRetailer();
         RetailerId retailerId = registerValidRetailer();
         Optional<Retailer> retailer = wholesaler.retailerBy(retailerId);
+        assertTrue(retailer.isPresent());
         assertEquals(retailerId, retailer.get().id);
     }
 
-    @Test
-    public void itShouldVerifyRetailerAfterContactingIt() throws Exception {
+    @Test(expected = RetailerDoesNotExist.class)
+    public void itShouldRejectRequestAPurchaseFromAnUnknownRetailer() {
+        wholesaler.purchase(new RetailerId(), new ItemId());
+    }
+
+    @Test(expected = ItemDoesNotExistException.class)
+    public void itShouldRejectRequestToPurchaseUnknownItem() throws MalformedURLException {
+        when(itemRepository.find(any())).thenReturn(Optional.empty());
         RetailerId retailerId = registerValidRetailer();
-        Optional<Retailer> retailer = wholesaler.retailerBy(retailerId);
-        wholesaler.attemptToValidate(retailer.get());
+        wholesaler.purchase(retailerId, new ItemId());
     }
 }
