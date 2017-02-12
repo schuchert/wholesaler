@@ -1,6 +1,9 @@
 package com.tradefederation.wholesaler.endpoint;
 
 import com.tradefederation.wholesaler.Wholesaler;
+import com.tradefederation.wholesaler.inventory.Item;
+import com.tradefederation.wholesaler.inventory.ItemSpecification;
+import com.tradefederation.wholesaler.inventory.ItemSpecificationId;
 import com.tradefederation.wholesaler.retailer.Retailer;
 import com.tradefederation.wholesaler.retailer.RetailerId;
 import io.swagger.annotations.Api;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -24,7 +28,7 @@ public class WholesalerController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "successful operation", response = Retailer.class),
             @ApiResponse(code = 400, message = "Invalid ID supplied", response = Retailer.class),
-            @ApiResponse(code = 404, message = "Pet not found", response = Retailer.class)})
+            @ApiResponse(code = 404, message = "Retailer not found", response = Retailer.class)})
     @RequestMapping(value = "/retailers/{id}",
             produces = {"application/json"},
             method = RequestMethod.GET)
@@ -50,5 +54,39 @@ public class WholesalerController {
         } catch (MalformedURLException e) {
             return ResponseEntity.badRequest().header("Invalid callbackUrl").build();
         }
+    }
+
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "successful operation", response = Item.class),
+            @ApiResponse(code = 400, message = "Invalid Supplier ID supplied", response = Item.class),
+            @ApiResponse(code = 400, message = "Invalid Item Specification ID supplied", response = Item.class)})
+    @RequestMapping(value = "/item",
+            produces = {"application/json"},
+            consumes = {"application/json"},
+            method = RequestMethod.POST)
+    ResponseEntity<Item> purchase(@ApiParam(required = true) @RequestBody PurchaseRequest purchaseRequest) {
+        Item item = wholesaler.purchase(purchaseRequest.retailerId, purchaseRequest.itemSpecificationId);
+        return ResponseEntity.accepted().body(item);
+    }
+
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "successful operation", response = Item.class)})
+    @RequestMapping(value = "/itemSpecification",
+            produces = {"application/json"},
+            consumes = {"application/json"},
+            method = RequestMethod.POST)
+    ResponseEntity<ItemSpecificationId> createSpecification(@ApiParam() @RequestBody ItemSpecificationDescription specDescription) {
+        ItemSpecificationId id = wholesaler.createItemSpecification(specDescription.name, specDescription.description, specDescription.price);
+        return ResponseEntity.accepted().body(id);
+    }
+
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "successful operation", response = ItemSpecification.class)})
+    @RequestMapping(value = "/itemSpecifications",
+            produces = {"application/json"},
+            method = RequestMethod.GET)
+    ResponseEntity<List<ItemSpecification>> getAllItemSpecifications() {
+        List<ItemSpecification> itemSpecifications = wholesaler.allSpecifications();
+        return ResponseEntity.accepted().body(itemSpecifications);
     }
 }

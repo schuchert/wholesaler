@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.net.URL;
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -52,5 +53,13 @@ public class Wholesaler {
         if (!itemSpecification.isPresent())
             throw new ItemSpecificationDoesNotExistException(itemSpecificationId);
         return itemRepository.build(itemSpecification.get());
+    }
+
+    public ItemSpecificationId createItemSpecification(String name, String description, String price) {
+        return itemSpecificationRepository.add(name, description, price);
+    }
+
+    public List<ItemSpecification> allSpecifications() {
+        return itemSpecificationRepository.all();
     }
 }

@@ -3,10 +3,13 @@ package com.tradefederation.wholesaler.inventory;
 import java.math.BigDecimal;
 
 public class ItemSpecification {
-    public final ItemSpecificationId id;
-    public final String name;
-    public final String description;
-    public final BigDecimal price;
+    public ItemSpecificationId id;
+    public String name;
+    public String description;
+    public BigDecimal price;
+
+    public ItemSpecification() {
+    }
 
     public ItemSpecification(ItemSpecificationId id, String name, String description, BigDecimal price) {
         this.id = id;

@@ -3,6 +3,10 @@ package com.tradefederation.wholesaler.inventory;
 public class ItemId {
     public final long id;
 
+    public ItemId(String value) {
+        this.id = Long.valueOf(value);
+    }
+
     public ItemId(long id) {
         this.id = id;
     }

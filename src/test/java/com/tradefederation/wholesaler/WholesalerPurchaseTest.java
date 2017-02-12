@@ -11,7 +11,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.math.BigDecimal;
 import java.net.URL;
 import java.util.Optional;
 
@@ -25,7 +24,7 @@ public class WholesalerPurchaseTest {
     private RetailerRepository retailerRepository;
     private Retailer retailer;
     private ItemSpecificationRepository itemSpecificationRepository;
-    private ItemSpecification itemSpecification;
+    private ItemSpecificationId itemSpecificationId;
     private ItemRepository itemRepository;
     private Wholesaler wholesaler;
 
@@ -34,22 +33,22 @@ public class WholesalerPurchaseTest {
         retailerRepository = new InMemoryRetailerRepsotiory();
         retailer = retailerRepository.add("name", new URL("http://www.retailer.com"));
         itemSpecificationRepository = new InMemoryItemSpecificationRepository();
-        itemSpecification = itemSpecificationRepository.add(new ItemSpecificationId(), "Name", "Description", BigDecimal.ONE);
+        itemSpecificationId = itemSpecificationRepository.add("Name", "Description", "1");
         itemRepository = new InMemoryItemRepository();
         wholesaler = new Wholesaler(clientAdapter, itemSpecificationRepository, retailerRepository, itemRepository);
     }
 
     @Test
     public void purchasingAnItemAddsNewItemToItemRepository() {
-        Item item = wholesaler.purchase(retailer.id, itemSpecification.id);
+        Item item = wholesaler.purchase(retailer.id, itemSpecificationId);
         Optional<Item> foundItem = itemRepository.findById(item.id);
         assertTrue(foundItem.isPresent());
     }
 
     @Test
     public void itShouldCreateUniqueIdsForPurchasedItems() {
-        Item item1 = wholesaler.purchase(retailer.id, itemSpecification.id);
-        Item item2 = wholesaler.purchase(retailer.id, itemSpecification.id);
+        Item item1 = wholesaler.purchase(retailer.id, itemSpecificationId);
+        Item item2 = wholesaler.purchase(retailer.id, itemSpecificationId);
         assertFalse(item1.id.equals(item2.id));
     }
 }

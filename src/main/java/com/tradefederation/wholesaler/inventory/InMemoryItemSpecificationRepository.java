@@ -3,15 +3,19 @@ package com.tradefederation.wholesaler.inventory;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Component
 public class InMemoryItemSpecificationRepository implements ItemSpecificationRepository {
+    AtomicLong nextId;
     List<ItemSpecification> specifications;
 
     public InMemoryItemSpecificationRepository() {
+        nextId = new AtomicLong(0);
         specifications = new LinkedList<>();
     }
 
@@ -21,9 +25,14 @@ public class InMemoryItemSpecificationRepository implements ItemSpecificationRep
     }
 
     @Override
-    public ItemSpecification add(ItemSpecificationId itemSpecificationId, String name, String description, BigDecimal price) {
-        ItemSpecification specification = new ItemSpecification(itemSpecificationId, name, description, price);
-        specifications.add(specification);
-        return specification;
+    public ItemSpecificationId add(String name, String description, String price) {
+        ItemSpecificationId itemSpecificationId = new ItemSpecificationId(nextId.incrementAndGet());
+        specifications.add(new ItemSpecification(itemSpecificationId, name, description, new BigDecimal(price)));
+        return itemSpecificationId;
+    }
+
+    @Override
+    public List<ItemSpecification> all() {
+        return Collections.unmodifiableList(specifications);
     }
 }
