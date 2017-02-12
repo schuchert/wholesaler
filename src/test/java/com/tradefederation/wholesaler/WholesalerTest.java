@@ -1,8 +1,6 @@
 package com.tradefederation.wholesaler;
 
-import com.tradefederation.wholesaler.inventory.ItemSpecificationDoesNotExistException;
-import com.tradefederation.wholesaler.inventory.ItemSpecificationId;
-import com.tradefederation.wholesaler.inventory.ItemSpecificationRepository;
+import com.tradefederation.wholesaler.inventory.*;
 import com.tradefederation.wholesaler.retailer.*;
 import junit.framework.TestCase;
 import org.junit.Before;
@@ -32,11 +30,13 @@ public class WholesalerTest {
     ItemSpecificationRepository itemSpecificationRepository;
 
     RetailerRepository retailerRepository;
+    ItemRepository itemRepository;
 
     @Before
     public void init() {
         retailerRepository = new InMemoryRetailerRepsotiory();
-        wholesaler = new Wholesaler(ignored, itemSpecificationRepository, retailerRepository);
+        itemRepository = new InMemoryItemRepository();
+        wholesaler = new Wholesaler(ignored, itemSpecificationRepository, retailerRepository, itemRepository);
     }
 
     @Test

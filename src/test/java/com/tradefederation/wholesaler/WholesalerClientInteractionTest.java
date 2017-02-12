@@ -1,5 +1,7 @@
 package com.tradefederation.wholesaler;
 
+import com.tradefederation.wholesaler.inventory.InMemoryItemRepository;
+import com.tradefederation.wholesaler.inventory.ItemRepository;
 import com.tradefederation.wholesaler.inventory.ItemSpecificationRepository;
 import com.tradefederation.wholesaler.retailer.InMemoryRetailerRepsotiory;
 import com.tradefederation.wholesaler.retailer.RetailerClientAdapter;
@@ -23,13 +25,15 @@ public class WholesalerClientInteractionTest {
     ItemSpecificationRepository itemSpecificationRepository;
 
     RetailerRepository retailerRepository;
+    ItemRepository itemRepository;
 
     private URL retailerUrl;
 
     @Before
     public void init() throws Exception {
         retailerRepository = new InMemoryRetailerRepsotiory();
-        wholesaler = new Wholesaler(retailerClientAdapter, itemSpecificationRepository, retailerRepository);
+        itemRepository = new InMemoryItemRepository();
+        wholesaler = new Wholesaler(retailerClientAdapter, itemSpecificationRepository, retailerRepository, itemRepository);
         retailerUrl = new URL("http://www.retailer.com");
         retailerRepository = new InMemoryRetailerRepsotiory();
     }

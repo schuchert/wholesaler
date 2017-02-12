@@ -1,9 +1,6 @@
 package com.tradefederation.wholesaler;
 
-import com.tradefederation.wholesaler.inventory.ItemSpecification;
-import com.tradefederation.wholesaler.inventory.ItemSpecificationDoesNotExistException;
-import com.tradefederation.wholesaler.inventory.ItemSpecificationId;
-import com.tradefederation.wholesaler.inventory.ItemSpecificationRepository;
+import com.tradefederation.wholesaler.inventory.*;
 import com.tradefederation.wholesaler.retailer.*;
 
 import java.net.URL;
@@ -12,13 +9,15 @@ import java.util.Optional;
 public class Wholesaler {
     private RetailerId retailerId;
     private RetailerClientAdapter retailerClientAdapter;
-    private final ItemSpecificationRepository itemSpecificationRepository;
-    private final RetailerRepository retailerRepository;
+    private ItemSpecificationRepository itemSpecificationRepository;
+    private RetailerRepository retailerRepository;
+    private ItemRepository itemRepository;
 
-    public Wholesaler(RetailerClientAdapter retailerClientAdapter, ItemSpecificationRepository itemSpecificationRepository, RetailerRepository retailerRepository) {
+    public Wholesaler(RetailerClientAdapter retailerClientAdapter, ItemSpecificationRepository itemSpecificationRepository, RetailerRepository retailerRepository, ItemRepository itemRepository) {
         this.retailerClientAdapter = retailerClientAdapter;
         this.itemSpecificationRepository = itemSpecificationRepository;
         this.retailerRepository = retailerRepository;
+        this.itemRepository = itemRepository;
     }
 
     public RetailerId addRetailer(String name, URL callbackUrl) {
@@ -42,12 +41,13 @@ public class Wholesaler {
         return retailerRepository.retailerBy(retailerId);
     }
 
-    public void purchase(RetailerId retailerId, ItemSpecificationId itemSpecificationId) {
+    public Item purchase(RetailerId retailerId, ItemSpecificationId itemSpecificationId) {
         Optional<Retailer> candidateRetailer = retailerRepository.retailerBy(retailerId);
         if (!candidateRetailer.isPresent())
             throw new RetailerDoesNotExist(retailerId);
-        Optional<ItemSpecification> item = itemSpecificationRepository.find(itemSpecificationId);
-        if (!item.isPresent())
+        Optional<ItemSpecification> itemSpecification = itemSpecificationRepository.find(itemSpecificationId);
+        if (!itemSpecification.isPresent())
             throw new ItemSpecificationDoesNotExistException(itemSpecificationId);
+        return itemRepository.build(itemSpecification.get());
     }
 }
