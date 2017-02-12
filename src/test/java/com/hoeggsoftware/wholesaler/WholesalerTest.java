@@ -1,5 +1,12 @@
 package com.hoeggsoftware.wholesaler;
 
+import com.hoeggsoftware.wholesaler.inventory.ItemSpecificationDoesNotExistException;
+import com.hoeggsoftware.wholesaler.inventory.ItemSpecificationId;
+import com.hoeggsoftware.wholesaler.inventory.ItemSpecificationRepository;
+import com.hoeggsoftware.wholesaler.retailer.Retailer;
+import com.hoeggsoftware.wholesaler.retailer.RetailerClientAdapter;
+import com.hoeggsoftware.wholesaler.retailer.RetailerDoesNotExist;
+import com.hoeggsoftware.wholesaler.retailer.RetailerId;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,11 +30,11 @@ public class WholesalerTest {
     RetailerClientAdapter ignored;
 
     @Mock
-    ItemRepository itemRepository;
+    ItemSpecificationRepository itemSpecificationRepository;
 
     @Before
     public void init() {
-        wholesaler = new Wholesaler(ignored, itemRepository);
+        wholesaler = new Wholesaler(ignored, itemSpecificationRepository);
     }
 
     @Test
@@ -97,13 +104,13 @@ public class WholesalerTest {
 
     @Test(expected = RetailerDoesNotExist.class)
     public void itShouldRejectRequestAPurchaseFromAnUnknownRetailer() {
-        wholesaler.purchase(new RetailerId(), new ItemId());
+        wholesaler.purchase(new RetailerId(), new ItemSpecificationId());
     }
 
-    @Test(expected = ItemDoesNotExistException.class)
+    @Test(expected = ItemSpecificationDoesNotExistException.class)
     public void itShouldRejectRequestToPurchaseUnknownItem() throws MalformedURLException {
-        when(itemRepository.find(any())).thenReturn(Optional.empty());
+        when(itemSpecificationRepository.find(any())).thenReturn(Optional.empty());
         RetailerId retailerId = registerValidRetailer();
-        wholesaler.purchase(retailerId, new ItemId());
+        wholesaler.purchase(retailerId, new ItemSpecificationId());
     }
 }

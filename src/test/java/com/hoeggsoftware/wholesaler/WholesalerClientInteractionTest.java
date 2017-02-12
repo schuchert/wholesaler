@@ -1,5 +1,6 @@
 package com.hoeggsoftware.wholesaler;
 
+import com.hoeggsoftware.wholesaler.retailer.RetailerClientAdapter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

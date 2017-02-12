@@ -1,4 +1,4 @@
-package com.hoeggsoftware.wholesaler;
+package com.hoeggsoftware.wholesaler.retailer;
 
 public class RetailerDoesNotExist extends RuntimeException {
     public final RetailerId retailerId;

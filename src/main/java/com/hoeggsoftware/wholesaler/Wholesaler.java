@@ -1,5 +1,14 @@
 package com.hoeggsoftware.wholesaler;
 
+import com.hoeggsoftware.wholesaler.inventory.ItemSpecification;
+import com.hoeggsoftware.wholesaler.inventory.ItemSpecificationDoesNotExistException;
+import com.hoeggsoftware.wholesaler.inventory.ItemSpecificationId;
+import com.hoeggsoftware.wholesaler.inventory.ItemSpecificationRepository;
+import com.hoeggsoftware.wholesaler.retailer.Retailer;
+import com.hoeggsoftware.wholesaler.retailer.RetailerClientAdapter;
+import com.hoeggsoftware.wholesaler.retailer.RetailerDoesNotExist;
+import com.hoeggsoftware.wholesaler.retailer.RetailerId;
+
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
@@ -9,11 +18,11 @@ public class Wholesaler {
     List<Retailer> retailers;
     private RetailerId retailerId;
     private RetailerClientAdapter retailerClientAdapter;
-    private final ItemRepository itemRepository;
+    private final ItemSpecificationRepository itemSpecificationRepository;
 
-    public Wholesaler(RetailerClientAdapter retailerClientAdapter, ItemRepository itemRepository) {
+    public Wholesaler(RetailerClientAdapter retailerClientAdapter, ItemSpecificationRepository itemSpecificationRepository) {
         this.retailerClientAdapter = retailerClientAdapter;
-        this.itemRepository = itemRepository;
+        this.itemSpecificationRepository = itemSpecificationRepository;
         retailers = new LinkedList<>();
     }
 
@@ -43,12 +52,12 @@ public class Wholesaler {
         return retailers.stream().filter(current -> current.id.equals(retailerId)).findFirst();
     }
 
-    public void purchase(RetailerId retailerId, ItemId itemId) {
+    public void purchase(RetailerId retailerId, ItemSpecificationId itemSpecificationId) {
         Optional<Retailer> candidateRetailer = retailers.stream().filter(r -> r.id.equals(retailerId)).findFirst();
         if (!candidateRetailer.isPresent())
             throw new RetailerDoesNotExist(retailerId);
-        Optional<Item> item = itemRepository.find(itemId);
+        Optional<ItemSpecification> item = itemSpecificationRepository.find(itemSpecificationId);
         if (!item.isPresent())
-            throw new ItemDoesNotExistException(itemId);
+            throw new ItemSpecificationDoesNotExistException(itemSpecificationId);
     }
 }
