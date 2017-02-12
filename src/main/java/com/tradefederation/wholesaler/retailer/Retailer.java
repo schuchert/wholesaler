@@ -1,4 +1,4 @@
-package com.hoeggsoftware.wholesaler.retailer;
+package com.tradefederation.wholesaler.retailer;
 
 import java.net.URL;
 

@@ -1,12 +1,13 @@
-package com.hoeggsoftware.wholesaler;
+package com.tradefederation.wholesaler;
 
-import com.hoeggsoftware.wholesaler.inventory.ItemSpecificationDoesNotExistException;
-import com.hoeggsoftware.wholesaler.inventory.ItemSpecificationId;
-import com.hoeggsoftware.wholesaler.inventory.ItemSpecificationRepository;
-import com.hoeggsoftware.wholesaler.retailer.Retailer;
-import com.hoeggsoftware.wholesaler.retailer.RetailerClientAdapter;
-import com.hoeggsoftware.wholesaler.retailer.RetailerDoesNotExist;
-import com.hoeggsoftware.wholesaler.retailer.RetailerId;
+import com.tradefederation.wholesaler.inventory.ItemSpecificationDoesNotExistException;
+import com.tradefederation.wholesaler.inventory.ItemSpecificationId;
+import com.tradefederation.wholesaler.inventory.ItemSpecificationRepository;
+import com.tradefederation.wholesaler.retailer.Retailer;
+import com.tradefederation.wholesaler.retailer.RetailerClientAdapter;
+import com.tradefederation.wholesaler.retailer.RetailerDoesNotExist;
+import com.tradefederation.wholesaler.retailer.RetailerId;
+import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,7 +18,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Optional;
 
-import static junit.framework.TestCase.*;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
@@ -46,7 +48,7 @@ public class WholesalerTest {
     @Test
     public void itShouldStoreANewRetailer() throws Exception {
         registerValidRetailer();
-        assertTrue(wholesaler.retailers().iterator().hasNext());
+        TestCase.assertTrue(wholesaler.retailers().iterator().hasNext());
     }
 
     private String validName() {
@@ -60,7 +62,7 @@ public class WholesalerTest {
     @Test
     public void itShouldReturnIdOfRetailerAdded() throws Exception {
         RetailerId retailerId = registerValidRetailer();
-        assertNotNull(retailerId);
+        TestCase.assertNotNull(retailerId);
     }
 
     private RetailerId registerValidRetailer() throws MalformedURLException {

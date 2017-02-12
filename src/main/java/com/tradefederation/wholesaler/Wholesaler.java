@@ -1,13 +1,13 @@
-package com.hoeggsoftware.wholesaler;
+package com.tradefederation.wholesaler;
 
-import com.hoeggsoftware.wholesaler.inventory.ItemSpecification;
-import com.hoeggsoftware.wholesaler.inventory.ItemSpecificationDoesNotExistException;
-import com.hoeggsoftware.wholesaler.inventory.ItemSpecificationId;
-import com.hoeggsoftware.wholesaler.inventory.ItemSpecificationRepository;
-import com.hoeggsoftware.wholesaler.retailer.Retailer;
-import com.hoeggsoftware.wholesaler.retailer.RetailerClientAdapter;
-import com.hoeggsoftware.wholesaler.retailer.RetailerDoesNotExist;
-import com.hoeggsoftware.wholesaler.retailer.RetailerId;
+import com.tradefederation.wholesaler.inventory.ItemSpecification;
+import com.tradefederation.wholesaler.inventory.ItemSpecificationDoesNotExistException;
+import com.tradefederation.wholesaler.inventory.ItemSpecificationId;
+import com.tradefederation.wholesaler.inventory.ItemSpecificationRepository;
+import com.tradefederation.wholesaler.retailer.Retailer;
+import com.tradefederation.wholesaler.retailer.RetailerClientAdapter;
+import com.tradefederation.wholesaler.retailer.RetailerDoesNotExist;
+import com.tradefederation.wholesaler.retailer.RetailerId;
 
 import java.net.URL;
 import java.util.LinkedList;

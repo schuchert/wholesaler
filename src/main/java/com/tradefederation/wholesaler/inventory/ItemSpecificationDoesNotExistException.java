@@ -1,4 +1,4 @@
-package com.hoeggsoftware.wholesaler.inventory;
+package com.tradefederation.wholesaler.inventory;
 
 public class ItemSpecificationDoesNotExistException extends RuntimeException {
     public final ItemSpecificationId itemSpecificationId;

@@ -1,4 +1,4 @@
-package com.hoeggsoftware.wholesaler.inventory;
+package com.tradefederation.wholesaler.inventory;
 
 import java.util.Optional;
 
