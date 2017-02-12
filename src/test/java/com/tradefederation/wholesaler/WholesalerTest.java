@@ -3,10 +3,7 @@ package com.tradefederation.wholesaler;
 import com.tradefederation.wholesaler.inventory.ItemSpecificationDoesNotExistException;
 import com.tradefederation.wholesaler.inventory.ItemSpecificationId;
 import com.tradefederation.wholesaler.inventory.ItemSpecificationRepository;
-import com.tradefederation.wholesaler.retailer.Retailer;
-import com.tradefederation.wholesaler.retailer.RetailerClientAdapter;
-import com.tradefederation.wholesaler.retailer.RetailerDoesNotExist;
-import com.tradefederation.wholesaler.retailer.RetailerId;
+import com.tradefederation.wholesaler.retailer.*;
 import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,21 +31,18 @@ public class WholesalerTest {
     @Mock
     ItemSpecificationRepository itemSpecificationRepository;
 
+    RetailerRepository retailerRepository;
+
     @Before
     public void init() {
-        wholesaler = new Wholesaler(ignored, itemSpecificationRepository);
-    }
-
-    @Test
-    public void itShouldHaveNoRetailers() {
-        wholesaler.retailers().iterator().hasNext();
-        assertFalse(wholesaler.retailers().iterator().hasNext());
+        retailerRepository = new InMemoryRetailerRepsotiory();
+        wholesaler = new Wholesaler(ignored, itemSpecificationRepository, retailerRepository);
     }
 
     @Test
     public void itShouldStoreANewRetailer() throws Exception {
-        registerValidRetailer();
-        TestCase.assertTrue(wholesaler.retailers().iterator().hasNext());
+        RetailerId retailerId = registerValidRetailer();
+        assertTrue(retailerRepository.retailerBy(retailerId).isPresent());
     }
 
     private String validName() {

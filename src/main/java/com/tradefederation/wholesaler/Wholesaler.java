@@ -4,30 +4,21 @@ import com.tradefederation.wholesaler.inventory.ItemSpecification;
 import com.tradefederation.wholesaler.inventory.ItemSpecificationDoesNotExistException;
 import com.tradefederation.wholesaler.inventory.ItemSpecificationId;
 import com.tradefederation.wholesaler.inventory.ItemSpecificationRepository;
-import com.tradefederation.wholesaler.retailer.Retailer;
-import com.tradefederation.wholesaler.retailer.RetailerClientAdapter;
-import com.tradefederation.wholesaler.retailer.RetailerDoesNotExist;
-import com.tradefederation.wholesaler.retailer.RetailerId;
+import com.tradefederation.wholesaler.retailer.*;
 
 import java.net.URL;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Optional;
 
 public class Wholesaler {
-    List<Retailer> retailers;
     private RetailerId retailerId;
     private RetailerClientAdapter retailerClientAdapter;
     private final ItemSpecificationRepository itemSpecificationRepository;
+    private final RetailerRepository retailerRepository;
 
-    public Wholesaler(RetailerClientAdapter retailerClientAdapter, ItemSpecificationRepository itemSpecificationRepository) {
+    public Wholesaler(RetailerClientAdapter retailerClientAdapter, ItemSpecificationRepository itemSpecificationRepository, RetailerRepository retailerRepository) {
         this.retailerClientAdapter = retailerClientAdapter;
         this.itemSpecificationRepository = itemSpecificationRepository;
-        retailers = new LinkedList<>();
-    }
-
-    public Iterable<Retailer> retailers() {
-        return retailers;
+        this.retailerRepository = retailerRepository;
     }
 
     public RetailerId addRetailer(String name, URL callbackUrl) {
@@ -38,8 +29,7 @@ public class Wholesaler {
             throw new IllegalArgumentException("callbackUrl cannot be null");
 
         retailerId = new RetailerId();
-        Retailer candidateRetailer = new Retailer(retailerId, name, callbackUrl);
-        retailers.add(candidateRetailer);
+        Retailer candidateRetailer = retailerRepository.add(retailerId, name, callbackUrl);
         verifyRetailerUrl(candidateRetailer);
         return retailerId;
     }
@@ -49,11 +39,11 @@ public class Wholesaler {
     }
 
     public Optional<Retailer> retailerBy(RetailerId retailerId) {
-        return retailers.stream().filter(current -> current.id.equals(retailerId)).findFirst();
+        return retailerRepository.retailerBy(retailerId);
     }
 
     public void purchase(RetailerId retailerId, ItemSpecificationId itemSpecificationId) {
-        Optional<Retailer> candidateRetailer = retailers.stream().filter(r -> r.id.equals(retailerId)).findFirst();
+        Optional<Retailer> candidateRetailer = retailerRepository.retailerBy(retailerId);
         if (!candidateRetailer.isPresent())
             throw new RetailerDoesNotExist(retailerId);
         Optional<ItemSpecification> item = itemSpecificationRepository.find(itemSpecificationId);
