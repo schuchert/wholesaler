@@ -1,4 +1,4 @@
-package com.hoeggsoftware.wholesaler;
+package com.tradefederation.wholesaler.retailer;
 
 import java.net.URL;
 
@@ -20,5 +20,9 @@ public class Retailer {
 
     public void setVerified(boolean verified) {
         this.verified = verified;
+    }
+
+    public RetailerId getId() {
+        return id;
     }
 }
