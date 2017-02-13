@@ -15,6 +15,5 @@ public class ItemSpecificationTest {
         String json = mapper.writeValueAsString(spec);
         assertTrue(json.contains("name"));
         assertTrue(json.contains("10"));
-        System.out.println(json);
     }
 }
