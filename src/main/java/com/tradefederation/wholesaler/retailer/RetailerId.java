@@ -1,7 +1,10 @@
 package com.tradefederation.wholesaler.retailer;
 
 public class RetailerId {
-    public final long value;
+    public long value;
+
+    public RetailerId() {
+    }
 
     public RetailerId(String value) {
         this.value = Long.valueOf(value);

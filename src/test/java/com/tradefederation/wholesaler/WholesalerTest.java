@@ -21,6 +21,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class WholesalerTest {
+    public static final ItemSpecificationId ITEM_SPECIFICATION_ID = new ItemSpecificationId(1);
     private Wholesaler wholesaler;
 
     @Mock
@@ -101,13 +102,13 @@ public class WholesalerTest {
 
     @Test(expected = RetailerDoesNotExist.class)
     public void itShouldRejectRequestAPurchaseFromAnUnknownRetailer() {
-        wholesaler.purchase(new RetailerId(1), new ItemSpecificationId());
+        wholesaler.purchase(new RetailerId(1), ITEM_SPECIFICATION_ID);
     }
 
     @Test(expected = ItemSpecificationDoesNotExistException.class)
     public void itShouldRejectRequestToPurchaseUnknownItem() throws MalformedURLException {
         when(itemSpecificationRepository.find(any())).thenReturn(Optional.empty());
         RetailerId retailerId = registerValidRetailer();
-        wholesaler.purchase(retailerId, new ItemSpecificationId());
+        wholesaler.purchase(retailerId, ITEM_SPECIFICATION_ID);
     }
 }
