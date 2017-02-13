@@ -1,7 +1,10 @@
 package com.tradefederation.wholesaler.inventory;
 
 public class ItemSpecificationId {
-    public final long id;
+    public long id;
+
+    public ItemSpecificationId() {
+    }
 
     public ItemSpecificationId(String value) {
         id = Long.valueOf(value);

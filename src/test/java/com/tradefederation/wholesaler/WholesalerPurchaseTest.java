@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.math.BigDecimal;
 import java.net.URL;
 import java.util.Optional;
 
@@ -33,7 +34,7 @@ public class WholesalerPurchaseTest {
         retailerRepository = new InMemoryRetailerRepsotiory();
         retailer = retailerRepository.add("name", new URL("http://www.retailer.com"));
         itemSpecificationRepository = new InMemoryItemSpecificationRepository();
-        itemSpecificationId = itemSpecificationRepository.add("Name", "Description", "1");
+        itemSpecificationId = itemSpecificationRepository.add("Name", "Description", BigDecimal.ONE);
         itemRepository = new InMemoryItemRepository();
         wholesaler = new Wholesaler(clientAdapter, itemSpecificationRepository, retailerRepository, itemRepository);
     }

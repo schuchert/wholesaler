@@ -81,7 +81,7 @@ public class WholesalerController {
     }
 
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "successful operation", response = ItemSpecification.class)})
+            @ApiResponse(code = 200, message = "successful operation", response = ItemSpecification.class, responseContainer = "List")})
     @RequestMapping(value = "/itemSpecifications",
             produces = {"application/json"},
             method = RequestMethod.GET)

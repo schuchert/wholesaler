@@ -25,9 +25,9 @@ public class InMemoryItemSpecificationRepository implements ItemSpecificationRep
     }
 
     @Override
-    public ItemSpecificationId add(String name, String description, String price) {
+    public ItemSpecificationId add(String name, String description, BigDecimal price) {
         ItemSpecificationId itemSpecificationId = new ItemSpecificationId(nextId.incrementAndGet());
-        specifications.add(new ItemSpecification(itemSpecificationId, name, description, new BigDecimal(price)));
+        specifications.add(new ItemSpecification(itemSpecificationId, name, description, price));
         return itemSpecificationId;
     }
 
