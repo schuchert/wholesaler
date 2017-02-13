@@ -28,9 +28,9 @@ public class Application {
                 .groupName("wholesaler-api")
                 .apiInfo(wholesalerApiInfo())
                 .select()
-                    .apis(RequestHandlerSelectors.basePackage("com.tradefederation.wholesaler"))
-                    .paths(PathSelectors.any())
-                    .build()
+                .apis(RequestHandlerSelectors.basePackage("com.tradefederation.wholesaler"))
+                .paths(PathSelectors.any())
+                .build()
                 .pathMapping("/");
     }
 
@@ -38,4 +38,5 @@ public class Application {
         return new ApiInfoBuilder()
                 .title("Wholesaler API")
                 .build();
-    }}
+    }
+}

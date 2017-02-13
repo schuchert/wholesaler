@@ -22,16 +22,13 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class WholesalerTest {
     public static final ItemSpecificationId ITEM_SPECIFICATION_ID = new ItemSpecificationId(1);
-    private Wholesaler wholesaler;
-
     @Mock
     RetailerClientAdapter ignored;
-
     @Mock
     ItemSpecificationRepository itemSpecificationRepository;
-
     RetailerRepository retailerRepository;
     ItemRepository itemRepository;
+    private Wholesaler wholesaler;
     private RetailerId retailerId;
 
     @Before
@@ -73,12 +70,12 @@ public class WholesalerTest {
         assertEquals(retailerId, retailer.get().id);
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void itShouldNotAllowNullRetailerName() throws Exception {
         wholesaler.addRetailer(null, validCallbackUrl());
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void itShouldNotAllowNullUrl() throws Exception {
         wholesaler.addRetailer(validName(), null);
     }

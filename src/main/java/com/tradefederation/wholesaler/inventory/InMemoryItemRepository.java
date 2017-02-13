@@ -9,9 +9,8 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Component
 public class InMemoryItemRepository implements ItemRepository {
-    private AtomicLong nextId;
-
     List<Item> items;
+    private AtomicLong nextId;
 
     public InMemoryItemRepository() {
         nextId = new AtomicLong(0);

@@ -17,16 +17,13 @@ import java.net.URL;
 
 @RunWith(MockitoJUnitRunner.class)
 public class WholesalerClientInteractionTest {
-    private Wholesaler wholesaler;
-
-    @Mock
-    private RetailerClientAdapter retailerClientAdapter;
     @Mock
     ItemSpecificationRepository itemSpecificationRepository;
-
     RetailerRepository retailerRepository;
     ItemRepository itemRepository;
-
+    private Wholesaler wholesaler;
+    @Mock
+    private RetailerClientAdapter retailerClientAdapter;
     private URL retailerUrl;
 
     @Before
