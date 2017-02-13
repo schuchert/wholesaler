@@ -48,7 +48,7 @@ package:
     - 'mvn $MAVEN_CLI_OPTS package'
   artifacts:
     paths:
-    - target/app.jar
+    - target/wholesaler.jar
   only:
     - master
 

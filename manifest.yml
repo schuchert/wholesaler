@@ -2,7 +2,7 @@
 applications:
 - name: galaxydistributors
   buildpack: java_buildpack
-  path: target/app.jar
+  path: target/wholesaler.jar
   services:
   - wholesaler-db
   routes:
