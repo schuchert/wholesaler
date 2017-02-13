@@ -3,6 +3,7 @@ package com.tradefederation.wholesaler.retailer;
 import org.springframework.stereotype.Component;
 
 import java.net.URL;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -29,5 +30,10 @@ public class InMemoryRetailerRepsotiory implements RetailerRepository {
     @Override
     public Optional<Retailer> retailerBy(RetailerId retailerId) {
         return retailers.stream().filter(current -> current.id.equals(retailerId)).findFirst();
+    }
+
+    @Override
+    public List<Retailer> all() {
+        return Collections.unmodifiableList(retailers);
     }
 }

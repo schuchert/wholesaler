@@ -63,4 +63,8 @@ public class Wholesaler {
     public List<ItemSpecification> allSpecifications() {
         return itemSpecificationRepository.all();
     }
+
+    public List<Retailer> allRetailers() {
+        return retailerRepository.all();
+    }
 }

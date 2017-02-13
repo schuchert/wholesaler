@@ -35,7 +35,7 @@ public class WholesalerController {
     ResponseEntity<Retailer> getRetailerById(@ApiParam(required = true) @PathVariable("id") RetailerId id) {
         Optional<Retailer> retailer = wholesaler.retailerBy(id);
         if (retailer.isPresent()) {
-            return ResponseEntity.accepted().body(retailer.get());
+            return ResponseEntity.ok().body(retailer.get());
         }
         return ResponseEntity.notFound().build();
     }
@@ -50,7 +50,7 @@ public class WholesalerController {
     ResponseEntity<RetailerId> createRetailer(@ApiParam() @RequestBody RetailerDescription retailer) {
         try {
             RetailerId retailerId = wholesaler.addRetailer(retailer.name, new URL(retailer.callbackUrl));
-            return ResponseEntity.accepted().body(retailerId);
+            return ResponseEntity.ok().body(retailerId);
         } catch (MalformedURLException e) {
             return ResponseEntity.badRequest().header("Invalid callbackUrl").build();
         }
@@ -66,7 +66,7 @@ public class WholesalerController {
             method = RequestMethod.POST)
     ResponseEntity<Item> purchase(@ApiParam(required = true) @RequestBody PurchaseRequest purchaseRequest) {
         Item item = wholesaler.purchase(purchaseRequest.retailerId, purchaseRequest.itemSpecificationId);
-        return ResponseEntity.accepted().body(item);
+        return ResponseEntity.ok().body(item);
     }
 
     @ApiResponses(value = {
@@ -77,7 +77,7 @@ public class WholesalerController {
             method = RequestMethod.POST)
     ResponseEntity<ItemSpecificationId> createSpecification(@ApiParam() @RequestBody ItemSpecificationDescription specDescription) {
         ItemSpecificationId id = wholesaler.createItemSpecification(specDescription.name, specDescription.description, specDescription.price);
-        return ResponseEntity.accepted().body(id);
+        return ResponseEntity.ok().body(id);
     }
 
     @ApiResponses(value = {
@@ -87,6 +87,16 @@ public class WholesalerController {
             method = RequestMethod.GET)
     ResponseEntity<List<ItemSpecification>> getAllItemSpecifications() {
         List<ItemSpecification> itemSpecifications = wholesaler.allSpecifications();
-        return ResponseEntity.accepted().body(itemSpecifications);
+        return ResponseEntity.ok().body(itemSpecifications);
+    }
+
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "successful operation", response = ItemSpecification.class, responseContainer = "List")})
+    @RequestMapping(value = "/retailers",
+            produces = {"application/json"},
+            method = RequestMethod.GET)
+    ResponseEntity<List<Retailer>> getAllRetailers() {
+        List<Retailer> retailers = wholesaler.allRetailers();
+        return ResponseEntity.ok().body(retailers);
     }
 }
