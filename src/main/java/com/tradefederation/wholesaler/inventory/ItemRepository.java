@@ -8,4 +8,6 @@ public interface ItemRepository {
     Item build(ItemSpecification itemSpecification, Retailer retailer);
 
     Optional<Item> findById(ItemId id);
+
+    void clear();
 }

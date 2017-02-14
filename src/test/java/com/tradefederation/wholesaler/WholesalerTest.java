@@ -6,7 +6,7 @@ import com.tradefederation.wholesaler.inventory.ItemSpecificationId;
 import com.tradefederation.wholesaler.inventory.ItemSpecificationRepository;
 import com.tradefederation.wholesaler.retailer.*;
 import junit.framework.TestCase;
-import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -19,25 +19,24 @@ import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 
 public class WholesalerTest extends SpringBootTestBase {
-    public static final ItemSpecificationId ITEM_SPECIFICATION_ID = new ItemSpecificationId(1);
+    private static final ItemSpecificationId ITEM_SPECIFICATION_ID = new ItemSpecificationId(1);
 
     @Autowired
-    RetailerClientAdapter ignored;
+    private ItemSpecificationRepository itemSpecificationRepository;
     @Autowired
-    ItemSpecificationRepository itemSpecificationRepository;
+    private RetailerRepository retailerRepository;
     @Autowired
-    RetailerRepository retailerRepository;
-    @Autowired
-    ItemRepository itemRepository;
+    private ItemRepository itemRepository;
     @Autowired
     private Wholesaler wholesaler;
 
     private RetailerId retailerId;
 
-    @After
+    @Before
     public void clear() {
         retailerRepository.clear();
         itemSpecificationRepository.clear();
+        itemRepository.clear();
     }
 
     @Test
@@ -68,8 +67,7 @@ public class WholesalerTest extends SpringBootTestBase {
     public void itShouldAssociateRetailerIdWithNewlyCreatedRetailer() throws Exception {
         RetailerId retailerId = registerValidRetailer();
         Optional<Retailer> retailer = wholesaler.retailerBy(retailerId);
-        assertTrue(retailer.isPresent());
-        assertEquals(retailerId, retailer.get().id);
+        validateRetailer(retailerId, retailer);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -87,7 +85,7 @@ public class WholesalerTest extends SpringBootTestBase {
         RetailerId retailerId = registerValidRetailer();
         Optional<Retailer> retailer = wholesaler.retailerBy(retailerId);
         assertTrue(retailer.isPresent());
-        assertFalse(retailer.get().isVerified());
+        retailer.ifPresent(r -> assertFalse(r.isVerified()));
     }
 
     @Test
@@ -95,8 +93,7 @@ public class WholesalerTest extends SpringBootTestBase {
         registerValidRetailer();
         RetailerId retailerId = registerValidRetailer();
         Optional<Retailer> retailer = wholesaler.retailerBy(retailerId);
-        assertTrue(retailer.isPresent());
-        assertEquals(retailerId, retailer.get().id);
+        validateRetailer(retailerId, retailer);
     }
 
     @Test(expected = RetailerDoesNotExist.class)
@@ -109,4 +106,10 @@ public class WholesalerTest extends SpringBootTestBase {
         RetailerId retailerId = registerValidRetailer();
         wholesaler.purchase(retailerId, ITEM_SPECIFICATION_ID);
     }
+
+    private void validateRetailer(RetailerId retailerId, Optional<Retailer> retailer) {
+        assertTrue(retailer.isPresent());
+        retailer.ifPresent(r -> assertEquals(retailerId, r.id));
+    }
+
 }

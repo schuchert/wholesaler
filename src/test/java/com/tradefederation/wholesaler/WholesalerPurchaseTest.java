@@ -20,8 +20,6 @@ import static org.junit.Assert.assertNotNull;
 
 public class WholesalerPurchaseTest extends SpringBootTestBase {
     @Autowired
-    RetailerClientAdapter clientAdapter;
-    @Autowired
     private RetailerRepository retailerRepository;
     @Autowired
     private ItemSpecificationRepository itemSpecificationRepository;
@@ -31,14 +29,19 @@ public class WholesalerPurchaseTest extends SpringBootTestBase {
     private Wholesaler wholesaler;
 
     private Retailer retailer;
-    private Optional<ItemSpecification> itemSpecification;
+    private ItemSpecification itemSpecification;
     private ItemSpecificationId itemSpecificationId;
 
     @Before
     public void init() throws Exception {
+        retailerRepository.clear();
+        itemSpecificationRepository.clear();
+        itemRepository.clear();
+
         retailer = retailerRepository.add("name", new URL("http://www.retailer.com"));
         itemSpecificationId = itemSpecificationRepository.add("Name", "Description", BigDecimal.ONE);
-        itemSpecification = itemSpecificationRepository.find(itemSpecificationId);
+        Optional<ItemSpecification> foundSpec = itemSpecificationRepository.find(itemSpecificationId);
+        foundSpec.ifPresent(s -> this.itemSpecification = s);
     }
 
     @Test
@@ -67,8 +70,8 @@ public class WholesalerPurchaseTest extends SpringBootTestBase {
         Reservation reservation = wholesaler.reserve(retailer.id, itemSpecificationId, quantityToPurchase);
         assertEquals(reservation.retailer, retailer);
         assertEquals(reservation.items.size(), quantityToPurchase);
-        reservation.items.stream().forEach(i -> assertEquals(i.specification, itemSpecification.get()));
-        reservation.items.stream().forEach(i -> assertEquals(i.retailer, retailer));
+        reservation.items.forEach(i -> assertEquals(i.specification, itemSpecification));
+        reservation.items.forEach(i -> assertEquals(i.retailer, retailer));
         assertNotNull(reservation.secret);
     }
 }

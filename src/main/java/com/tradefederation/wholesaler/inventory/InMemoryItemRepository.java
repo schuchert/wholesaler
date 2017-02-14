@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Component
 public class InMemoryItemRepository implements ItemRepository {
-    List<Item> items;
+    private List<Item> items;
     private AtomicLong nextId;
 
     public InMemoryItemRepository() {
@@ -29,5 +29,10 @@ public class InMemoryItemRepository implements ItemRepository {
     @Override
     public Optional<Item> findById(ItemId id) {
         return items.stream().filter(i -> i.id.equals(id)).findFirst();
+    }
+
+    @Override
+    public void clear() {
+        items.clear();
     }
 }
