@@ -9,6 +9,19 @@ It has an [acceptance test suite][acceptance-test] you might like to look at.
 ## Running on the workshop [Pivotal Web Services][pws]
 Gitlab is deploying the application, see `.gitlab-ci.yml`
 
+## Running this app locally
+There are two options: in an IDE or at the command line.
+
+To run it in the IDE, run Application.java.
+
+To run at the command line, from the directory that contains this README.md:
+```bash
+java -jar target/wholesaler.jar
+```
+
+In both cases, it uses port 8080, so poing your browser to:
+(localhost:8080/swagger-ui.html)
+
 ## Running on your own [Pivotal Web Services][pws]
 
 Log in.
