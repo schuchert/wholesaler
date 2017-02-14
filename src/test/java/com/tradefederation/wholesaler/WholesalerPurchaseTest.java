@@ -17,6 +17,7 @@ import java.util.Optional;
 
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(MockitoJUnitRunner.class)
 public class WholesalerPurchaseTest {
@@ -51,5 +52,11 @@ public class WholesalerPurchaseTest {
         Item item1 = wholesaler.purchase(retailer.id, itemSpecificationId);
         Item item2 = wholesaler.purchase(retailer.id, itemSpecificationId);
         assertFalse(item1.id.equals(item2.id));
+    }
+
+    @Test
+    public void itShouldAssociatePurchasedItemWithRetailer() {
+        Item item = wholesaler.purchase(retailer.id, itemSpecificationId);
+        assertEquals(item.retailer, retailer);
     }
 }

@@ -53,7 +53,7 @@ public class Wholesaler {
         Optional<ItemSpecification> itemSpecification = itemSpecificationRepository.find(itemSpecificationId);
         if (!itemSpecification.isPresent())
             throw new ItemSpecificationDoesNotExistException(itemSpecificationId);
-        return itemRepository.build(itemSpecification.get());
+        return itemRepository.build(itemSpecification.get(), candidateRetailer.get());
     }
 
     public ItemSpecificationId createItemSpecification(String name, String description, BigDecimal price) {

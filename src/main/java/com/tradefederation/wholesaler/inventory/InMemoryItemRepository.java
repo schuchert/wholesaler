@@ -1,5 +1,6 @@
 package com.tradefederation.wholesaler.inventory;
 
+import com.tradefederation.wholesaler.retailer.Retailer;
 import org.springframework.stereotype.Component;
 
 import java.util.LinkedList;
@@ -18,9 +19,9 @@ public class InMemoryItemRepository implements ItemRepository {
     }
 
     @Override
-    public Item build(ItemSpecification itemSpecification) {
+    public Item build(ItemSpecification itemSpecification, Retailer retailer) {
         long id = nextId.incrementAndGet();
-        Item item = new Item(new ItemId(id), itemSpecification, itemSpecification.price);
+        Item item = new Item(new ItemId(id), itemSpecification, retailer, itemSpecification.price);
         items.add(item);
         return item;
     }
