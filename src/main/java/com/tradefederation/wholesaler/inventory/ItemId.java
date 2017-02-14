@@ -11,6 +11,10 @@ public class ItemId {
         this.id = id;
     }
 
+    public String toString() {
+        return Long.toString(id);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -36,4 +36,9 @@ public class InMemoryRetailerRepsotiory implements RetailerRepository {
     public List<Retailer> all() {
         return Collections.unmodifiableList(retailers);
     }
+
+    @Override
+    public void clear() {
+        retailers.clear();
+    }
 }

@@ -10,4 +10,6 @@ public interface ItemSpecificationRepository {
     ItemSpecificationId add(String name, String description, BigDecimal price);
 
     List<ItemSpecification> all();
+
+    void clear();
 }

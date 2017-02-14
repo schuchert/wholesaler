@@ -35,4 +35,9 @@ public class InMemoryItemSpecificationRepository implements ItemSpecificationRep
     public List<ItemSpecification> all() {
         return Collections.unmodifiableList(specifications);
     }
+
+    @Override
+    public void clear() {
+        specifications.clear();
+    }
 }

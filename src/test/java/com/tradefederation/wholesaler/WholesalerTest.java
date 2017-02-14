@@ -1,13 +1,19 @@
 package com.tradefederation.wholesaler;
 
-import com.tradefederation.wholesaler.inventory.*;
+import com.tradefederation.wholesaler.inventory.ItemRepository;
+import com.tradefederation.wholesaler.inventory.ItemSpecificationDoesNotExistException;
+import com.tradefederation.wholesaler.inventory.ItemSpecificationId;
+import com.tradefederation.wholesaler.inventory.ItemSpecificationRepository;
 import com.tradefederation.wholesaler.retailer.*;
 import junit.framework.TestCase;
-import org.junit.Before;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -19,23 +25,30 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ContextConfiguration(classes = {Application.class})
+@ActiveProfiles("test")
 public class WholesalerTest {
     public static final ItemSpecificationId ITEM_SPECIFICATION_ID = new ItemSpecificationId(1);
-    @Mock
+
+    @Autowired
     RetailerClientAdapter ignored;
-    @Mock
+    @Autowired
     ItemSpecificationRepository itemSpecificationRepository;
+    @Autowired
     RetailerRepository retailerRepository;
+    @Autowired
     ItemRepository itemRepository;
+    @Autowired
     private Wholesaler wholesaler;
+
     private RetailerId retailerId;
 
-    @Before
-    public void init() {
-        retailerRepository = new InMemoryRetailerRepsotiory();
-        itemRepository = new InMemoryItemRepository();
-        wholesaler = new Wholesaler(ignored, itemSpecificationRepository, retailerRepository, itemRepository);
+    @After
+    public void clear() {
+        retailerRepository.clear();
+        itemSpecificationRepository.clear();
     }
 
     @Test
@@ -104,7 +117,6 @@ public class WholesalerTest {
 
     @Test(expected = ItemSpecificationDoesNotExistException.class)
     public void itShouldRejectRequestToPurchaseUnknownItem() throws MalformedURLException {
-        when(itemSpecificationRepository.find(any())).thenReturn(Optional.empty());
         RetailerId retailerId = registerValidRetailer();
         wholesaler.purchase(retailerId, ITEM_SPECIFICATION_ID);
     }
