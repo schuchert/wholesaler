@@ -1,11 +1,13 @@
 stages:
-  - test
   - build
+  - test
+  - release
   - deploy
+  - cleanup
 
 .maven-runner: &maven-runner
   tags:
-    - maven
+  - maven
 
 variables:
   # This will supress any download for dependencies and plugins or upload messages which would clutter the console log.
@@ -20,49 +22,82 @@ variables:
 # Cache downloaded dependencies and plugins between builds.
 cache:
   paths:
-    - /root/.m2/repository/
+  - /root/.m2/repository/
 
-# This will only validate and compile stuff and run e.g. maven-enforcer-plugin.
-# Because some enforcer rules might check dependency convergence and class duplications
-# we use `test-compile` here instead of `validate`, so the correct classpath is picked up.
-validate:
-  stage: test
-  <<: *maven-runner
-  script:
-    - 'mvn $MAVEN_CLI_OPTS test-compile'
-
-# For merge requests do not `deploy` but only run `verify`.
-# See https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html
-verify:
-  stage: test
-  <<: *maven-runner
-  script:
-    - 'mvn $MAVEN_CLI_OPTS verify'
-  except:
-    - master
-
-package:
+build.maven:
   stage: build
   <<: *maven-runner
   script:
-    - 'mvn $MAVEN_CLI_OPTS package'
+  - 'mvn $MAVEN_CLI_OPTS package'
   artifacts:
     paths:
     - target/wholesaler.jar
-  only:
-    - master
 
-deploy:
-  stage: deploy
+release:
+  stage: release
+  only:
+  - master
+  except:
+  - tags
+  image: us.gcr.io/workshop-matrix/workshopslave
+  script:
+  - 'export CI_PUSH_REPO=`echo $CI_BUILD_REPO | perl -pe ''s#.*@(.+?(\:\d+)?)/#git@\1:#''`'
+  - 'eval "$(ssh-agent)" > /dev/null && ssh-add /root/.ssh/id_rsa_puppetmaster'
+  - 'ssh -o ''StrictHostKeyChecking no'' git@gitlab.tradefederation.space echo "no op" || true'
+  - 'git checkout -b release-work'
+  - 'git remote set-url --push origin "${CI_PUSH_REPO}"'
+  - 'mvn $MAVEN_CLI_OPTS build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.incrementalVersion}'
+  - 'mvn $MAVEN_CLI_OPTS clean package'
+  - 'gcloud auth activate-service-account "$ACCOUNT" --key-file /etc/secrets/gcloud-credentials.json --project "$PROJECT" -q'
+  - 'gsutil cp target/marketplace*.jar gs://devops_storage/releases/ || true'
+  - 'git add pom.xml && git commit -m "[skip ci] Release" && git tag -a -m "[skip ci] set release version" $(mvn help:evaluate -Dexpression=project.version |grep -v INFO) && mvn $MAVEN_CLI_OPTS versions:commit && git push origin release-work:${CI_BUILD_REF_NAME} --tags'
+  - 'mvn $MAVEN_CLI_OPTS build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion}-SNAPSHOT'
+  - 'git add pom.xml && git commit -m "[skip ci] set SNAPSHOT version for development" && git push origin release-work:${CI_BUILD_REF_NAME}'
+  tags:
+  - docker
+
+.deploy-pcf: &deploy-pcf
   image: monostream/cf-cli-autopilot
+  script:
+  - 'cf api https://api.run.pivotal.io'
+  - 'cf auth $PWS_ACCT $PWS_PASSWORD'
+  - 'cf target -o Workshops -s $PCF_SPACE'
+  - 'cf push -f $PCF_MANIFEST'
+  tags:
+  - docker
+
+deploy:qa-1:
+  stage: test
+  variables:
+    PCF_SPACE: galaxydistributors-qa-1
+    PCF_MANIFEST: manifest-qa-1.yml
+  <<: *deploy-pcf
+  only:
+  - master
+  except:
+  - tags
+  environment:
+    name: qa-1
+    url: http://galaxydistributors-qa-1.tradefederation.cfapps.io/swagger-ui.html
+
+deploy:production:
+  stage: deploy
+  variables:
+    PCF_SPACE: galaxydistributors
+    PCF_MANIFEST: manifest.yml
+  <<: *deploy-pcf
+  only:
+  - tags
+  only:
+  - master
   environment:
     name: production
-    url: http://galaxydistributors.tradefederation.space/swagger-ui.html
-  script:
-    - 'cf api https://api.run.pivotal.io'
-    - 'cf auth $PWS_ACCT $PWS_PASSWORD'
-    - 'cf target -o Workshops -s tradefederation'
-    - 'cf push'
-  tags:
-    - docker
+    url: http://galaxydistributors.tradefederation.space/
 
+cleanup:git:
+  stage: cleanup
+  image: us.gcr.io/workshop-matrix/workshopslave
+  script:
+  - 'git branch -D release-work || true'
+  tags:
+  - docker
