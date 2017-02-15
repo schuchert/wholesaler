@@ -1,15 +1,13 @@
 package com.tradefederation.wholesaler;
 
 import com.tradefederation.wholesaler.inventory.*;
-import com.tradefederation.wholesaler.retailer.InMemoryRetailerRepsotiory;
+import com.tradefederation.wholesaler.reservation.Reservation;
 import com.tradefederation.wholesaler.retailer.Retailer;
 import com.tradefederation.wholesaler.retailer.RetailerClientAdapter;
 import com.tradefederation.wholesaler.retailer.RetailerRepository;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.net.URL;
@@ -17,26 +15,33 @@ import java.util.Optional;
 
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-@RunWith(MockitoJUnitRunner.class)
-public class WholesalerPurchaseTest {
-    @Mock
-    RetailerClientAdapter clientAdapter;
+public class WholesalerPurchaseTest extends SpringBootTestBase {
+    @Autowired
     private RetailerRepository retailerRepository;
-    private Retailer retailer;
+    @Autowired
     private ItemSpecificationRepository itemSpecificationRepository;
-    private ItemSpecificationId itemSpecificationId;
+    @Autowired
     private ItemRepository itemRepository;
+    @Autowired
     private Wholesaler wholesaler;
+
+    private Retailer retailer;
+    private ItemSpecification itemSpecification;
+    private ItemSpecificationId itemSpecificationId;
 
     @Before
     public void init() throws Exception {
-        retailerRepository = new InMemoryRetailerRepsotiory();
+        retailerRepository.clear();
+        itemSpecificationRepository.clear();
+        itemRepository.clear();
+
         retailer = retailerRepository.add("name", new URL("http://www.retailer.com"));
-        itemSpecificationRepository = new InMemoryItemSpecificationRepository();
         itemSpecificationId = itemSpecificationRepository.add("Name", "Description", BigDecimal.ONE);
-        itemRepository = new InMemoryItemRepository();
-        wholesaler = new Wholesaler(clientAdapter, itemSpecificationRepository, retailerRepository, itemRepository);
+        Optional<ItemSpecification> foundSpec = itemSpecificationRepository.find(itemSpecificationId);
+        foundSpec.ifPresent(s -> this.itemSpecification = s);
     }
 
     @Test
@@ -51,5 +56,22 @@ public class WholesalerPurchaseTest {
         Item item1 = wholesaler.purchase(retailer.id, itemSpecificationId);
         Item item2 = wholesaler.purchase(retailer.id, itemSpecificationId);
         assertFalse(item1.id.equals(item2.id));
+    }
+
+    @Test
+    public void itShouldAssociatePurchasedItemWithRetailer() {
+        Item item = wholesaler.purchase(retailer.id, itemSpecificationId);
+        assertEquals(item.retailer, retailer);
+    }
+
+    @Test
+    public void itShouldCreateAReservationWithRequestedItemsAndASecret() {
+        int quantityToPurchase = 3;
+        Reservation reservation = wholesaler.reserve(retailer.id, itemSpecificationId, quantityToPurchase);
+        assertEquals(reservation.retailer, retailer);
+        assertEquals(reservation.items.size(), quantityToPurchase);
+        reservation.items.forEach(i -> assertEquals(i.specification, itemSpecification));
+        reservation.items.forEach(i -> assertEquals(i.retailer, retailer));
+        assertNotNull(reservation.secret);
     }
 }

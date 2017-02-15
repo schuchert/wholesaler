@@ -10,4 +10,6 @@ public interface RetailerRepository {
     Optional<Retailer> retailerBy(RetailerId retailerId);
 
     List<Retailer> all();
+
+    void clear();
 }

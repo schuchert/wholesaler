@@ -4,6 +4,7 @@ import com.tradefederation.wholesaler.Wholesaler;
 import com.tradefederation.wholesaler.inventory.Item;
 import com.tradefederation.wholesaler.inventory.ItemSpecification;
 import com.tradefederation.wholesaler.inventory.ItemSpecificationId;
+import com.tradefederation.wholesaler.reservation.Reservation;
 import com.tradefederation.wholesaler.retailer.Retailer;
 import com.tradefederation.wholesaler.retailer.RetailerId;
 import io.swagger.annotations.Api;
@@ -23,7 +24,7 @@ import java.util.Optional;
 @Api(value = "wholesaler", description = "The only interface into the wholesaler")
 public class WholesalerController {
     @Autowired
-    Wholesaler wholesaler;
+    private Wholesaler wholesaler;
 
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "successful operation", response = Retailer.class),
@@ -98,5 +99,17 @@ public class WholesalerController {
     ResponseEntity<List<Retailer>> getAllRetailers() {
         List<Retailer> retailers = wholesaler.allRetailers();
         return ResponseEntity.ok().body(retailers);
+    }
+
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "successful operation", response = Reservation.class)})
+    @RequestMapping(value = "/reservation",
+            produces = {"application/json"},
+            consumes = {"application/json"},
+            method = RequestMethod.POST)
+
+    public ResponseEntity<Reservation> reserve(@ApiParam() @RequestBody ReservationRequest request) {
+        Reservation reservation = wholesaler.reserve(request.retailerId, request.itemSpecificationId, request.quantityToPurchase);
+        return ResponseEntity.ok().body(reservation);
     }
 }
