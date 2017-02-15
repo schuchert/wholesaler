@@ -69,7 +69,7 @@ release:
 deploy:qa-1:
   stage: test
   variables:
-    PCF_SPACE: galaxydistributors-qa-1
+    PCF_SPACE: tradefederation-qa-1
     PCF_MANIFEST: manifest-qa-1.yml
   <<: *deploy-pcf
   only:
@@ -83,7 +83,7 @@ deploy:qa-1:
 deploy:production:
   stage: deploy
   variables:
-    PCF_SPACE: galaxydistributors
+    PCF_SPACE: tradefederation
     PCF_MANIFEST: manifest.yml
   <<: *deploy-pcf
   only:
