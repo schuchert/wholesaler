@@ -3,6 +3,7 @@ package com.tradefederation.wholesaler.endpoint;
 import com.tradefederation.wholesaler.Wholesaler;
 import com.tradefederation.wholesaler.inventory.Item;
 import com.tradefederation.wholesaler.inventory.ItemSpecification;
+import com.tradefederation.wholesaler.inventory.ItemSpecificationDoesNotExistException;
 import com.tradefederation.wholesaler.inventory.ItemSpecificationId;
 import com.tradefederation.wholesaler.reservation.Reservation;
 import com.tradefederation.wholesaler.retailer.Retailer;
@@ -38,7 +39,7 @@ public class WholesalerController {
         if (itemSpecification.isPresent()) {
             return ResponseEntity.ok().body(itemSpecification.get());
         }
-        return ResponseEntity.notFound().build();
+        throw new ItemSpecificationDoesNotExistException(id);
     }
 
     @ApiResponses(value = {
@@ -70,19 +71,6 @@ public class WholesalerController {
         } catch (MalformedURLException e) {
             return ResponseEntity.badRequest().header("Invalid callbackUrl").build();
         }
-    }
-
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "successful operation", response = Item.class),
-            @ApiResponse(code = 400, message = "Invalid Supplier ID supplied", response = Item.class),
-            @ApiResponse(code = 400, message = "Invalid Item Specification ID supplied", response = Item.class)})
-    @RequestMapping(value = "/item",
-            produces = {"application/json"},
-            consumes = {"application/json"},
-            method = RequestMethod.POST)
-    ResponseEntity<Item> purchase(@ApiParam(required = true) @RequestBody PurchaseRequest purchaseRequest) {
-        Item item = wholesaler.purchase(purchaseRequest.retailerId, purchaseRequest.itemSpecificationId);
-        return ResponseEntity.ok().body(item);
     }
 
     @ApiResponses(value = {
@@ -122,7 +110,6 @@ public class WholesalerController {
             produces = {"application/json"},
             consumes = {"application/json"},
             method = RequestMethod.POST)
-
     public ResponseEntity<Reservation> reserve(@ApiParam() @RequestBody ReservationRequest request) {
         Reservation reservation = wholesaler.reserve(request.retailerId, request.itemSpecificationId, request.quantityToPurchase);
         return ResponseEntity.ok().body(reservation);
