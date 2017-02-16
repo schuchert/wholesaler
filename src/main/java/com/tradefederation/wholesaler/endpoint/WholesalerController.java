@@ -27,10 +27,25 @@ public class WholesalerController {
     private Wholesaler wholesaler;
 
     @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "successful operation", response = ItemSpecification.class),
+            @ApiResponse(code = 400, message = "Invalid ID supplied", response = ItemSpecification.class),
+            @ApiResponse(code = 404, message = "Item Specification not found", response = ItemSpecification.class)})
+    @RequestMapping(value = "/itemSpecification/{id}",
+            produces = {"application/json"},
+            method = RequestMethod.GET)
+    ResponseEntity<ItemSpecification> getItemSpecificationById(@ApiParam(required = true) @PathVariable("id") ItemSpecificationId id) {
+        Optional<ItemSpecification> itemSpecification = wholesaler.itemSpecificationBy(id);
+        if (itemSpecification.isPresent()) {
+            return ResponseEntity.ok().body(itemSpecification.get());
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @ApiResponses(value = {
             @ApiResponse(code = 200, message = "successful operation", response = Retailer.class),
             @ApiResponse(code = 400, message = "Invalid ID supplied", response = Retailer.class),
             @ApiResponse(code = 404, message = "Retailer not found", response = Retailer.class)})
-    @RequestMapping(value = "/retailers/{id}",
+    @RequestMapping(value = "/retailer/{id}",
             produces = {"application/json"},
             method = RequestMethod.GET)
     ResponseEntity<Retailer> getRetailerById(@ApiParam(required = true) @PathVariable("id") RetailerId id) {
