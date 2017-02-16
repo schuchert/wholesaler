@@ -4,7 +4,10 @@ import com.tradefederation.wholesaler.inventory.ItemRepository;
 import com.tradefederation.wholesaler.inventory.ItemSpecificationDoesNotExistException;
 import com.tradefederation.wholesaler.inventory.ItemSpecificationId;
 import com.tradefederation.wholesaler.inventory.ItemSpecificationRepository;
-import com.tradefederation.wholesaler.retailer.*;
+import com.tradefederation.wholesaler.retailer.Retailer;
+import com.tradefederation.wholesaler.retailer.RetailerDoesNotExist;
+import com.tradefederation.wholesaler.retailer.RetailerId;
+import com.tradefederation.wholesaler.retailer.RetailerRepository;
 import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -109,7 +112,7 @@ public class WholesalerTest extends SpringBootTestBase {
 
     private void validateRetailer(RetailerId retailerId, Optional<Retailer> retailer) {
         assertTrue(retailer.isPresent());
-        retailer.ifPresent(r -> assertEquals(retailerId, r.id));
+        retailer.ifPresent(r -> assertEquals(retailerId, r.getId()));
     }
 
 }

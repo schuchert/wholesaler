@@ -11,8 +11,8 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Component
 public class InMemoryRetailerRepsotiory implements RetailerRepository {
-    AtomicLong nextRetailerId;
-    List<Retailer> retailers;
+    private AtomicLong nextRetailerId;
+    private List<Retailer> retailers;
 
     public InMemoryRetailerRepsotiory() {
         retailers = new LinkedList<>();
@@ -29,7 +29,7 @@ public class InMemoryRetailerRepsotiory implements RetailerRepository {
 
     @Override
     public Optional<Retailer> retailerBy(RetailerId retailerId) {
-        return retailers.stream().filter(current -> current.id.equals(retailerId)).findFirst();
+        return retailers.stream().filter(current -> current.getId().equals(retailerId)).findFirst();
     }
 
     @Override
