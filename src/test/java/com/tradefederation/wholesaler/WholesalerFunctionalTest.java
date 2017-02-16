@@ -75,6 +75,16 @@ public class WholesalerFunctionalTest {
     }
 
     @Test
+    public void missingRetailerProducesFailure() {
+        given()
+                .pathParam("id", 0)
+                .when()
+                .get("/retailer/{id}")
+                .then()
+                .statusCode(404);
+    }
+
+    @Test
     public void anAddedItemSpecificationCanBeFound() {
         ItemSpecificationId id = addItemSpecification();
 

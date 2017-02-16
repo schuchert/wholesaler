@@ -43,16 +43,6 @@ public class Wholesaler {
         return retailerRepository.retailerBy(retailerId);
     }
 
-    public Item purchase(RetailerId retailerId, ItemSpecificationId itemSpecificationId) {
-        Optional<Retailer> candidateRetailer = retailerRepository.retailerBy(retailerId);
-        if (!candidateRetailer.isPresent())
-            throw new RetailerDoesNotExist(retailerId);
-        Optional<ItemSpecification> itemSpecification = itemSpecificationRepository.find(itemSpecificationId);
-        if (!itemSpecification.isPresent())
-            throw new ItemSpecificationDoesNotExistException(itemSpecificationId);
-        return itemRepository.build(itemSpecification.get(), candidateRetailer.get());
-    }
-
     public ItemSpecificationId createItemSpecification(String name, String description, BigDecimal price) {
         return itemSpecificationRepository.add(name, description, price);
     }

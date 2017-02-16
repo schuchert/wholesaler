@@ -1,6 +1,9 @@
 package com.tradefederation.wholesaler;
 
-import com.tradefederation.wholesaler.inventory.*;
+import com.tradefederation.wholesaler.inventory.ItemRepository;
+import com.tradefederation.wholesaler.inventory.ItemSpecification;
+import com.tradefederation.wholesaler.inventory.ItemSpecificationId;
+import com.tradefederation.wholesaler.inventory.ItemSpecificationRepository;
 import com.tradefederation.wholesaler.reservation.Reservation;
 import com.tradefederation.wholesaler.retailer.Retailer;
 import com.tradefederation.wholesaler.retailer.RetailerRepository;
@@ -12,8 +15,6 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.util.Optional;
 
-import static junit.framework.TestCase.assertFalse;
-import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -41,26 +42,6 @@ public class WholesalerPurchaseTest extends SpringBootTestBase {
         itemSpecificationId = itemSpecificationRepository.add("Name", "Description", BigDecimal.ONE);
         Optional<ItemSpecification> foundSpec = itemSpecificationRepository.find(itemSpecificationId);
         foundSpec.ifPresent(s -> this.itemSpecification = s);
-    }
-
-    @Test
-    public void purchasingAnItemAddsNewItemToItemRepository() {
-        Item item = wholesaler.purchase(retailer.getId(), itemSpecificationId);
-        Optional<Item> foundItem = itemRepository.findById(item.id);
-        assertTrue(foundItem.isPresent());
-    }
-
-    @Test
-    public void itShouldCreateUniqueIdsForPurchasedItems() {
-        Item item1 = wholesaler.purchase(retailer.getId(), itemSpecificationId);
-        Item item2 = wholesaler.purchase(retailer.getId(), itemSpecificationId);
-        assertFalse(item1.id.equals(item2.id));
-    }
-
-    @Test
-    public void itShouldAssociatePurchasedItemWithRetailer() {
-        Item item = wholesaler.purchase(retailer.getId(), itemSpecificationId);
-        assertEquals(item.retailer, retailer);
     }
 
     @Test

@@ -1,11 +1,9 @@
 package com.tradefederation.wholesaler;
 
 import com.tradefederation.wholesaler.inventory.ItemRepository;
-import com.tradefederation.wholesaler.inventory.ItemSpecificationDoesNotExistException;
 import com.tradefederation.wholesaler.inventory.ItemSpecificationId;
 import com.tradefederation.wholesaler.inventory.ItemSpecificationRepository;
 import com.tradefederation.wholesaler.retailer.Retailer;
-import com.tradefederation.wholesaler.retailer.RetailerDoesNotExist;
 import com.tradefederation.wholesaler.retailer.RetailerId;
 import com.tradefederation.wholesaler.retailer.RetailerRepository;
 import junit.framework.TestCase;
@@ -97,17 +95,6 @@ public class WholesalerTest extends SpringBootTestBase {
         RetailerId retailerId = registerValidRetailer();
         Optional<Retailer> retailer = wholesaler.retailerBy(retailerId);
         validateRetailer(retailerId, retailer);
-    }
-
-    @Test(expected = RetailerDoesNotExist.class)
-    public void itShouldRejectRequestAPurchaseFromAnUnknownRetailer() {
-        wholesaler.purchase(new RetailerId(1), ITEM_SPECIFICATION_ID);
-    }
-
-    @Test(expected = ItemSpecificationDoesNotExistException.class)
-    public void itShouldRejectRequestToPurchaseUnknownItem() throws MalformedURLException {
-        RetailerId retailerId = registerValidRetailer();
-        wholesaler.purchase(retailerId, ITEM_SPECIFICATION_ID);
     }
 
     private void validateRetailer(RetailerId retailerId, Optional<Retailer> retailer) {
