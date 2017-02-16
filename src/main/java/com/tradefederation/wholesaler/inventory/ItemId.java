@@ -1,13 +1,24 @@
 package com.tradefederation.wholesaler.inventory;
 
 public class ItemId {
-    public final long id;
+    public long id;
+
+    public ItemId() {
+    }
 
     public ItemId(String value) {
         this.id = Long.valueOf(value);
     }
 
-    public ItemId(long id) {
+    ItemId(long id) {
+        this.id = id;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
         this.id = id;
     }
 

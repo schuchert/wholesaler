@@ -36,7 +36,7 @@ public class Wholesaler {
     }
 
     private void verifyRetailerUrl(Retailer candidateRetailer) {
-        retailerClientAdapter.ping(candidateRetailer.callbackUrl);
+        retailerClientAdapter.ping(candidateRetailer.getCallbackUrl());
     }
 
     public Optional<Retailer> retailerBy(RetailerId retailerId) {
@@ -49,6 +49,10 @@ public class Wholesaler {
 
     public ItemSpecificationId createItemSpecification(String name, String description, BigDecimal price) {
         return itemSpecificationRepository.add(name, description, price);
+    }
+
+    public Optional<ItemSpecification> itemSpecificationBy(ItemSpecificationId id) {
+        return itemSpecificationRepository.find(id);
     }
 
     public List<ItemSpecification> allSpecifications() {
