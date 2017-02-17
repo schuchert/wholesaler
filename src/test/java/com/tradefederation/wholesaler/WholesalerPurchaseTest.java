@@ -1,15 +1,12 @@
 package com.tradefederation.wholesaler;
 
-import com.tradefederation.wholesaler.inventory.ItemRepository;
 import com.tradefederation.wholesaler.inventory.ItemSpecification;
 import com.tradefederation.wholesaler.inventory.ItemSpecificationId;
-import com.tradefederation.wholesaler.inventory.ItemSpecificationRepository;
 import com.tradefederation.wholesaler.reservation.Reservation;
 import com.tradefederation.wholesaler.retailer.Retailer;
-import com.tradefederation.wholesaler.retailer.RetailerRepository;
+import com.tradefederation.wholesaler.retailer.WholesalerApplicationContext;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.net.URL;
@@ -18,14 +15,7 @@ import java.util.Optional;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class WholesalerPurchaseTest extends SpringBootTestBase {
-    @Autowired
-    private RetailerRepository retailerRepository;
-    @Autowired
-    private ItemSpecificationRepository itemSpecificationRepository;
-    @Autowired
-    private ItemRepository itemRepository;
-    @Autowired
+public class WholesalerPurchaseTest extends StartedApplicationTestBase {
     private Wholesaler wholesaler;
 
     private Retailer retailer;
@@ -34,10 +24,7 @@ public class WholesalerPurchaseTest extends SpringBootTestBase {
 
     @Before
     public void init() throws Exception {
-        retailerRepository.clear();
-        itemSpecificationRepository.clear();
-        itemRepository.clear();
-
+        wholesaler = WholesalerApplicationContext.compoentFor(Wholesaler.class);
         retailer = retailerRepository.add("name", new URL("http://www.retailer.com"));
         itemSpecificationId = itemSpecificationRepository.add("Name", "Description", BigDecimal.ONE);
         Optional<ItemSpecification> foundSpec = itemSpecificationRepository.find(itemSpecificationId);
