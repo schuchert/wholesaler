@@ -1,18 +1,17 @@
 package com.tradefederation.wholesaler.endpoint;
 
 import com.tradefederation.wholesaler.Wholesaler;
-import com.tradefederation.wholesaler.inventory.Item;
-import com.tradefederation.wholesaler.inventory.ItemSpecification;
-import com.tradefederation.wholesaler.inventory.ItemSpecificationDoesNotExistException;
-import com.tradefederation.wholesaler.inventory.ItemSpecificationId;
+import com.tradefederation.wholesaler.inventory.*;
 import com.tradefederation.wholesaler.reservation.Reservation;
 import com.tradefederation.wholesaler.retailer.Retailer;
 import com.tradefederation.wholesaler.retailer.RetailerId;
+import com.tradefederation.wholesaler.retailer.WholesalerApplicationContext;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -113,5 +112,22 @@ public class WholesalerController {
     public ResponseEntity<Reservation> reserve(@ApiParam() @RequestBody ReservationRequest request) {
         Reservation reservation = wholesaler.reserve(request.retailerId, request.itemSpecificationId, request.quantityToPurchase);
         return ResponseEntity.ok().body(reservation);
+    }
+
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "successful operation", response = String.class),
+            @ApiResponse(code = 502, message = "marketplace unavailable", response = String.class)})
+    @RequestMapping(value = "/products", method = RequestMethod.POST)
+    public ResponseEntity<String> replaceItemSpecificationsWithProductsFromMarketplace() {
+        ProductionInventoryRetriever productionInventoryRetriever = new ProductionInventoryRetriever() {
+            protected String retrieveProducts() {
+                String result = super.retrieveProducts();
+                WholesalerApplicationContext.compoentFor(ItemSpecificationRepository.class).clear();
+                return result;
+            }
+        };
+        if (productionInventoryRetriever.isSuccess())
+            return ResponseEntity.ok().body("Success");
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("unable to connect to marketplace");
     }
 }
