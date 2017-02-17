@@ -50,9 +50,9 @@ release:
   - 'mvn $MAVEN_CLI_OPTS clean package'
   - 'gcloud auth activate-service-account "$ACCOUNT" --key-file /etc/secrets/gcloud-credentials.json --project "$PROJECT" -q'
   - 'gsutil cp target/wholesaler*.jar gs://devops_storage/releases/ || true'
-  - 'git add pom.xml && git commit -m "[skip ci] Release" && git tag -a -m "[skip ci] set release version" $(mvn help:evaluate -Dexpression=project.version |grep -v INFO) && mvn $MAVEN_CLI_OPTS versions:commit && git push origin release-work:${CI_BUILD_REF_NAME} --tags'
+  - 'git add pom.xml && git commit -m "[skip ci] Release" && git tag -a -m "[skip ci] set release version" $(mvn help:evaluate -Dexpression=project.version |grep -v INFO) && mvn $MAVEN_CLI_OPTS versions:commit && git push origin release-${CI_BUILD_ID}:${CI_BUILD_REF_NAME} --tags'
   - 'mvn $MAVEN_CLI_OPTS build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion}-SNAPSHOT'
-  - 'git add pom.xml && git commit -m "[skip ci] set SNAPSHOT version for development" && git push origin release-work:${CI_BUILD_REF_NAME}'
+  - 'git add pom.xml && git commit -m "[skip ci] set SNAPSHOT version for development" && git push origin release-${CI_BUILD_ID}:${CI_BUILD_REF_NAME}'
   tags:
   - docker
 
