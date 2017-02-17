@@ -1,7 +1,7 @@
 stages:
-  - cleanup
   - build
   - test
+  - cleanup
   - release
   - deploy
 
