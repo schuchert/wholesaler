@@ -31,9 +31,9 @@ public class ProductionInventoryRetriever {
             initializeRestAssured();
             mapProductsToItemSpecifications(retrieveProductStream());
             success = true;
-        } catch(Throwable e) {
+        } catch (Throwable e) {
             Supplier<String> s;
-            log.log(Level.SEVERE, e, ()->"Unable to connect to marketplace");
+            log.log(Level.SEVERE, e, () -> "Unable to connect to marketplace");
             success = false;
         }
     }
@@ -48,7 +48,9 @@ public class ProductionInventoryRetriever {
         products.forEach(productHashMap -> {
             String sku = (String) productHashMap.get("sku");
             String description = (String) productHashMap.get("description");
-            itemSpecificationRepository.add(sku, description, BigDecimal.TEN);
+            int randomMultiplier = (int)(Math.random() * 9);
+            BigDecimal multiplicand = new BigDecimal(description.length() + randomMultiplier);
+            itemSpecificationRepository.add(sku, description, BigDecimal.TEN.multiply(multiplicand));
         });
     }
 
