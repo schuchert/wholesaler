@@ -44,7 +44,7 @@ release:
   - 'export CI_PUSH_REPO=`echo $CI_BUILD_REPO | perl -pe ''s#.*@(.+?(\:\d+)?)/#git@\1:#''`'
   - 'eval "$(ssh-agent)" > /dev/null && ssh-add /root/.ssh/id_rsa_puppetmaster'
   - 'ssh -o ''StrictHostKeyChecking no'' git@gitlab.tradefederation.space echo "no op" || true'
-  - 'git checkout -b release-work'
+  - 'git checkout -b release-${CI_BUILD_ID}'
   - 'git remote set-url --push origin "${CI_PUSH_REPO}"'
   - 'mvn $MAVEN_CLI_OPTS build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.incrementalVersion}'
   - 'mvn $MAVEN_CLI_OPTS clean package'
