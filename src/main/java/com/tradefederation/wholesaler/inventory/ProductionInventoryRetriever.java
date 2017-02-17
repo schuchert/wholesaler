@@ -4,6 +4,7 @@ import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.http.ContentType;
 import com.jayway.restassured.response.Response;
 import com.tradefederation.wholesaler.retailer.WholesalerApplicationContext;
+import lombok.extern.java.Log;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Supplier;
+import java.util.logging.Level;
 
 import static com.jayway.restassured.RestAssured.given;
 import static com.jayway.restassured.path.json.JsonPath.from;
@@ -18,11 +21,21 @@ import static com.jayway.restassured.path.json.JsonPath.from;
 @Component
 @DependsOn({"inventorySpecificationRepository", "wholesalerApplicationContext"})
 @Profile("production")
+@Log
 public class ProductionInventoryRetriever {
 
+    private boolean success;
+
     public ProductionInventoryRetriever() {
-        initializeRestAssured();
-        mapProductsToItemSpecifications(retrieveProductStream());
+        try {
+            initializeRestAssured();
+            mapProductsToItemSpecifications(retrieveProductStream());
+            success = true;
+        } catch(Throwable e) {
+            Supplier<String> s;
+            log.log(Level.SEVERE, e, ()->"Unable to connect to marketplace");
+            success = false;
+        }
     }
 
     List<HashMap<String, Object>> retrieveProductStream() {
@@ -45,7 +58,7 @@ public class ProductionInventoryRetriever {
         RestAssured.baseURI = "http://marketplace.tradefederation.space";
     }
 
-    String retrieveProducts() {
+    protected String retrieveProducts() {
         Response response = given()
                 .when()
                 .get("/catalog")
@@ -53,4 +66,7 @@ public class ProductionInventoryRetriever {
         return response.asString();
     }
 
+    public boolean isSuccess() {
+        return success;
+    }
 }

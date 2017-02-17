@@ -9,4 +9,4 @@ applications:
   - route: galaxydistributors.tradefederation.space
   - route: galaxydistributors.tradefederation.cfapps.io
   env:
-    SPRING_PROFILE_ACTIVE: production
+    SPRING_PROFILES_ACTIVE: production
