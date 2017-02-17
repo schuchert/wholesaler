@@ -15,7 +15,7 @@
 
     <groupId>com.tradefederation</groupId>
     <artifactId>wholesaler</artifactId>
-    <version>1.0.5-SNAPSHOT</version>
+    <version>1.0.6-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <properties>
