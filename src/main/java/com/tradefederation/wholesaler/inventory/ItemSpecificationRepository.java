@@ -7,7 +7,7 @@ import java.util.Optional;
 public interface ItemSpecificationRepository {
     Optional<ItemSpecification> find(ItemSpecificationId itemSpecificationId);
 
-    ItemSpecificationId add(String name, String description, BigDecimal price);
+    ItemSpecificationId add(String sku, String description, BigDecimal price);
 
     List<ItemSpecification> all();
 

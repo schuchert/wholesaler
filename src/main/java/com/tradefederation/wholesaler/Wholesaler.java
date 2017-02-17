@@ -43,10 +43,6 @@ public class Wholesaler {
         return retailerRepository.retailerBy(retailerId);
     }
 
-    public Item purchase(RetailerId retailerId, ItemSpecificationId itemSpecificationId) {
-        return reserve(retailerId, itemSpecificationId, 1).getItems().get(0);
-    }
-
     public ItemSpecificationId createItemSpecification(String name, String description, BigDecimal price) {
         return itemSpecificationRepository.add(name, description, price);
     }

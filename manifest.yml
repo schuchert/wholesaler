@@ -8,3 +8,5 @@ applications:
   routes:
   - route: galaxydistributors.tradefederation.space
   - route: galaxydistributors.tradefederation.cfapps.io
+  env:
+    SPRING_PROFILES_ACTIVE: production

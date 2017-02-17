@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
-@Component
+@Component("inventorySpecificationRepository")
 public class InMemoryItemSpecificationRepository implements ItemSpecificationRepository {
-    AtomicLong nextId;
-    List<ItemSpecification> specifications;
+    private AtomicLong nextId;
+    private List<ItemSpecification> specifications;
 
     public InMemoryItemSpecificationRepository() {
         nextId = new AtomicLong(0);
@@ -25,9 +25,9 @@ public class InMemoryItemSpecificationRepository implements ItemSpecificationRep
     }
 
     @Override
-    public ItemSpecificationId add(String name, String description, BigDecimal price) {
+    public ItemSpecificationId add(String sku, String description, BigDecimal price) {
         ItemSpecificationId itemSpecificationId = new ItemSpecificationId(nextId.incrementAndGet());
-        specifications.add(new ItemSpecification(itemSpecificationId, name, description, price));
+        specifications.add(new ItemSpecification(itemSpecificationId, sku, description, price));
         return itemSpecificationId;
     }
 

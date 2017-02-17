@@ -1,9 +1,9 @@
 stages:
   - build
   - test
+  - cleanup
   - release
   - deploy
-  - cleanup
 
 .maven-runner: &maven-runner
   tags:
