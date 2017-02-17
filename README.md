@@ -19,7 +19,7 @@ To run at the command line, from the directory that contains this README.md:
 java -jar target/wholesaler.jar
 ```
 
-In both cases, it uses port 8080, so poing your browser to:
+In both cases, it uses port 8080, so point your browser to:
 (localhost:8080/swagger-ui.html)
 
 ## Running on your own [Pivotal Web Services][pws]
@@ -36,16 +36,9 @@ Target your org / space.
 cf target -o myorg -s myspace
 ```
 
-Sign up for a cleardb instance.
-
-```bash
-cf create-service cleardb spark mysql
-```
-
 Build the app.
 
 ```bash
-brew install maven
 mvn package
 ```
 
@@ -55,31 +48,9 @@ Push the app. Its manifest assumes you called your ClearDB instance 'mysql'.
 cf push -n mysubdomain
 ```
 
-Export the test host
-
-```bash
-export HOST=http://mysubdomain.cfapps.io
-```
-
-Now follow the [interaction instructions][interaction].
-
 ## Running locally
 
 The following assumes you have a working Java 1.8 SDK installed.
-
-Install and start mysql:
-
-```bash
-brew install mysql
-mysql.server start
-mysql -u root
-```
-
-Create a database user and table in the MySQL REPL you just opened:
-
-```
-bin/create_db_and_user.sh
-```
 
 Start the application server from your IDE or the command line:
 
@@ -87,14 +58,4 @@ Start the application server from your IDE or the command line:
 mvn spring-boot:run
 ```
 
-Export the test host
-
-```bash
-export HOST=http://localhost:8080
-```
-
-Now follow the [interaction instructions][interaction].
-
-[acceptance-test]:https://github.com/cloudfoundry-samples/pong_matcher_acceptance
-[pws]:https://run.pivotal.io
-[interaction]:https://github.com/cloudfoundry-samples/pong_matcher_rails/blob/master/README.md#interaction-instructions
+Finally, point your browser to the [UI documentation](http://localhost:8080/swagger-ui.html).
