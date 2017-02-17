@@ -1,15 +1,12 @@
 package com.tradefederation.wholesaler;
 
-import com.tradefederation.wholesaler.inventory.ItemRepository;
 import com.tradefederation.wholesaler.inventory.ItemSpecificationId;
-import com.tradefederation.wholesaler.inventory.ItemSpecificationRepository;
 import com.tradefederation.wholesaler.retailer.Retailer;
 import com.tradefederation.wholesaler.retailer.RetailerId;
-import com.tradefederation.wholesaler.retailer.RetailerRepository;
+import com.tradefederation.wholesaler.retailer.WholesalerApplicationContext;
 import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -19,25 +16,16 @@ import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 
-public class WholesalerTest extends SpringBootTestBase {
+public class WholesalerTest extends StartedApplicationTestBase {
     private static final ItemSpecificationId ITEM_SPECIFICATION_ID = new ItemSpecificationId(1);
 
-    @Autowired
-    private ItemSpecificationRepository itemSpecificationRepository;
-    @Autowired
-    private RetailerRepository retailerRepository;
-    @Autowired
-    private ItemRepository itemRepository;
-    @Autowired
     private Wholesaler wholesaler;
 
     private RetailerId retailerId;
 
     @Before
-    public void clear() {
-        retailerRepository.clear();
-        itemSpecificationRepository.clear();
-        itemRepository.clear();
+    public void getWholesaler() {
+        wholesaler = WholesalerApplicationContext.compoentFor(Wholesaler.class);
     }
 
     @Test

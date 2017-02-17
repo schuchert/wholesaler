@@ -2,24 +2,16 @@ package com.tradefederation.wholesaler;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.http.ContentType;
 import com.jayway.restassured.response.Response;
 import com.tradefederation.wholesaler.endpoint.ItemSpecificationDescription;
 import com.tradefederation.wholesaler.endpoint.ReservationRequest;
 import com.tradefederation.wholesaler.endpoint.RetailerDescription;
-import com.tradefederation.wholesaler.inventory.ItemRepository;
 import com.tradefederation.wholesaler.inventory.ItemSpecification;
 import com.tradefederation.wholesaler.inventory.ItemSpecificationId;
-import com.tradefederation.wholesaler.inventory.ItemSpecificationRepository;
 import com.tradefederation.wholesaler.reservation.Reservation;
 import com.tradefederation.wholesaler.retailer.Retailer;
 import com.tradefederation.wholesaler.retailer.RetailerId;
-import com.tradefederation.wholesaler.retailer.RetailerRepository;
-import com.tradefederation.wholesaler.retailer.WholesalerApplicationContext;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -29,37 +21,9 @@ import static com.jayway.restassured.RestAssured.given;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class WholesalerFunctionalTest {
+public class WholesalerFunctionalTest extends StartedApplicationTestBase {
     private static final String ITEM_SPECIFICATION_NAME = "xys1111";
     private static String RETAILER_NAME = "A Very Nice Retailer";
-
-    private static ItemSpecificationRepository itemSpecificationRepository;
-    private static ItemRepository itemRepository;
-    private static RetailerRepository retailerRepository;
-
-    @BeforeClass
-    public static void setup() {
-        Application.main(new String[]{});
-        itemSpecificationRepository = WholesalerApplicationContext.compoentFor(ItemSpecificationRepository.class);
-        itemRepository = WholesalerApplicationContext.compoentFor(ItemRepository.class);
-        retailerRepository = WholesalerApplicationContext.compoentFor(RetailerRepository.class);
-
-        RestAssured.port = Integer.valueOf(System.getProperty("server.port", "8080"));
-        RestAssured.basePath = System.getProperty("server.base", "/");
-        RestAssured.baseURI = System.getProperty("server.host", "http://localhost");
-    }
-
-    @Before
-    public void init() {
-        itemSpecificationRepository.clear();
-        itemRepository.clear();
-        retailerRepository.clear();
-    }
-
-    @After
-    public void cleanup() {
-        init();
-    }
 
     @Test
     public void anAddedRetailerCanBeFound() {
