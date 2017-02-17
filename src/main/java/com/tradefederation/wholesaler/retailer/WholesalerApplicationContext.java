@@ -5,7 +5,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
-@Component
+@Component("wholesalerApplicationContext")
 public class WholesalerApplicationContext implements ApplicationContextAware {
     private static ApplicationContext applicationContext;
 
@@ -13,7 +13,10 @@ public class WholesalerApplicationContext implements ApplicationContextAware {
         if (applicationContext == null)
             throw new RuntimeException("Application context not yet set.");
 
-        return applicationContext.getBean(clazz);
+        T bean = applicationContext.getBean(clazz);
+        if (bean == null)
+            throw new RuntimeException("Unable to find bean of type: " + clazz);
+        return bean;
     }
 
     @Override
