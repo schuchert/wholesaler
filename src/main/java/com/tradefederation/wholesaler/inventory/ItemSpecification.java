@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class ItemSpecification {
     public ItemSpecificationId id;
-    public String name;
+    public String sku;
     public String description;
     public BigDecimal price;
 }
