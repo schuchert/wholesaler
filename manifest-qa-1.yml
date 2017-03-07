@@ -1,9 +1,0 @@
----
-applications:
-- name: galaxydistributors-qa-1
-  buildpack: java_buildpack
-  path: target/wholesaler.jar
-  services:
-  - wholesaler-db
-  routes:
-  - route: galaxydistributors-qa-1.tradefederation.cfapps.io
