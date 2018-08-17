@@ -16,11 +16,11 @@ To run it in the IDE, run Application.java.
 
 To run at the command line, from the directory that contains this README.md:
 ```bash
+mvn package
 java -jar target/wholesaler.jar
 ```
 
-In both cases, it uses port 8080, so point your browser to:
-(localhost:8080/swagger-ui.html)
+In both cases, it uses port 8080, so point your browser to: [Swagger UI](http://localhost:8080/swagger-ui.html)
 
 ## Running on your own [Pivotal Web Services][pws]
 
@@ -58,4 +58,4 @@ Start the application server from your IDE or the command line:
 mvn spring-boot:run
 ```
 
-Finally, point your browser to the [UI documentation](http://localhost:8080/swagger-ui.html).
+Finally, point your browser to the [Swagger UI](http://localhost:8080/swagger-ui.html).
